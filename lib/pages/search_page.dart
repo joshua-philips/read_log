@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:books_log/models/openlibrary_search.dart';
+import 'package:books_log/pages/details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -43,55 +44,54 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        elevation: 0,
-        title: Container(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.white.withOpacity(0.2),
-          ),
-          child: TextField(
-            controller: searchController,
-            onSubmitted: (text) {
-              if (searchController.text.isNotEmpty) {
-                openLibrarySearch(searchController.text);
-              }
-            },
-            decoration: InputDecoration(
-              icon: Icon(Icons.search),
-              hintText: 'Search title, author',
-              border: InputBorder.none,
-              suffixIcon: IconButton(
-                onPressed: () {
-                  searchController.clear();
-                },
-                icon: Icon(Icons.close),
-              ),
+          elevation: 0,
+          title: Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white.withOpacity(0.2),
             ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 5.0, right: 15, top: 5, bottom: 5),
-            child: ElevatedButton(
-              onPressed: () {
+            child: TextField(
+              controller: searchController,
+              onSubmitted: (text) {
                 if (searchController.text.isNotEmpty) {
                   openLibrarySearch(searchController.text);
                 }
               },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+              decoration: InputDecoration(
+                icon: Icon(Icons.search),
+                hintText: 'Search title, author',
+                border: InputBorder.none,
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    searchController.clear();
+                  },
+                  icon: Icon(Icons.close),
                 ),
               ),
-              child: Text('Search'),
             ),
           ),
-        ],
-      ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 5.0, right: 15, top: 5, bottom: 5),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (searchController.text.isNotEmpty) {
+                    openLibrarySearch(searchController.text);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Text('Search'),
+              ),
+            ),
+          ]),
       body: buildSearchBody(),
     );
   }
@@ -135,7 +135,14 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Route route = MaterialPageRoute(
+                      builder: (_) => DetailsPage(
+                        openLibrarySearchDoc: results.docs[index],
+                      ),
+                    );
+                    Navigator.push(context, route);
+                  },
                 ),
               ),
             );
