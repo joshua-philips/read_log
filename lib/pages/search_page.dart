@@ -42,9 +42,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
           elevation: 0,
+          backgroundColor: Colors.transparent,
           title: Container(
             padding: EdgeInsets.only(left: 10, right: 10),
             clipBehavior: Clip.hardEdge,
