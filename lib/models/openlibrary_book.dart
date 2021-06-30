@@ -46,6 +46,39 @@ class OpenLibraryBook {
     required this.ebooks,
     required this.cover,
   });
+  factory OpenLibraryBook.noValues() {
+    return OpenLibraryBook(
+      authors: [],
+      byStatement: '',
+      classifications: Classifications(
+        lcClassifications: [],
+        deweyDecimalClass: [],
+      ),
+      cover: Cover(small: '', medium: '', large: ''),
+      ebooks: [],
+      excerpts: [],
+      identifiers: Identifiers(
+          goodreads: [],
+          librarything: [],
+          isbn10: [],
+          lccn: [],
+          openlibrary: []),
+      key: '',
+      links: [],
+      notes: '',
+      numberOfPages: 0,
+      pagination: '',
+      publishDate: '',
+      publishPlaces: [],
+      publishers: [],
+      subjectPeople: [],
+      subjectPlaces: [],
+      subjectTimes: [],
+      subjects: [],
+      title: '',
+      url: '',
+    );
+  }
 
   factory OpenLibraryBook.fromJson(Map<String, dynamic> json) {
     List<Authors> newAuthors = [];

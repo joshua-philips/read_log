@@ -33,6 +33,25 @@ class OpenLibraryWorks {
     required this.lastModified,
   });
 
+  factory OpenLibraryWorks.noValues() {
+    return OpenLibraryWorks(
+      description: '',
+      title: '',
+      covers: [],
+      subjectPlaces: [],
+      subjects: [],
+      subjectPeople: [],
+      key: '',
+      authors: [],
+      subjectTimes: [],
+      type: '',
+      latestRevision: 0,
+      revision: 0,
+      created: Created(type: '', value: ''),
+      lastModified: Created(type: '', value: ''),
+    );
+  }
+
   factory OpenLibraryWorks.fromJson(Map<String, dynamic> json) {
     List<Authors> newAuthors = [];
     json['authors'] != null

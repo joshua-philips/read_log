@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         primaryColor: Colors.black,
+        accentColor: Colors.green,
         scaffoldBackgroundColor: Colors.grey[900],
       ),
       home: SearchPage(),

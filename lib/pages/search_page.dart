@@ -17,6 +17,7 @@ class _SearchPageState extends State<SearchPage> {
   late OpenLibrarySearch results;
   bool searchOngoing = false;
   bool searchCompleted = false;
+  bool error = false;
 
   String searchUrl = 'http://openlibrary.org/search.json?q=';
 
@@ -24,6 +25,7 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       searchOngoing = true;
       searchCompleted = false;
+      error = false;
     });
     try {
       http.Response response = await http.get(Uri.parse(searchUrl + title));
@@ -36,6 +38,10 @@ class _SearchPageState extends State<SearchPage> {
       });
     } catch (e) {
       print('Error: ' + e.toString());
+      setState(() {
+        searchOngoing = false;
+        error = true;
+      });
     }
   }
 
@@ -43,13 +49,12 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          elevation: 0,
           backgroundColor: Colors.transparent,
           title: Container(
-            padding: EdgeInsets.only(left: 10, right: 10),
+            padding: EdgeInsets.only(left: 8, right: 5),
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(5),
               color: Colors.white.withOpacity(0.2),
             ),
             child: TextField(
@@ -74,8 +79,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 5.0, right: 15, top: 5, bottom: 5),
+              padding: const EdgeInsets.only(right: 15, top: 5, bottom: 5),
               child: ElevatedButton(
                 onPressed: () {
                   if (searchController.text.isNotEmpty) {
@@ -85,7 +89,7 @@ class _SearchPageState extends State<SearchPage> {
                 style: ElevatedButton.styleFrom(
                   primary: Colors.green,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 ),
                 child: Text('Search'),
@@ -146,6 +150,10 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             );
+    } else if (error) {
+      return Center(
+        child: Text('Error. Try again'),
+      );
     } else {
       return Container();
     }

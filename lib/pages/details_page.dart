@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:books_log/components/add_book_details.dart';
 import 'package:books_log/models/openlibrary_book.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/models/openlibrary_works.dart';
@@ -56,7 +57,6 @@ class _DetailsPageState extends State<DetailsPage> {
       http.Response response = await http.get(Uri.parse(workUrl));
       OpenLibraryWorks newWorks =
           OpenLibraryWorks.fromJson(json.decode(response.body));
-      print(response.body);
       setState(() {
         worksResult = newWorks;
       });
@@ -72,8 +72,6 @@ class _DetailsPageState extends State<DetailsPage> {
       http.Response response = await http.get(Uri.parse(bookUrl));
       OpenLibraryBook newBook =
           OpenLibraryBook.fromJson(json.decode(response.body)['LCCN:$lccn']);
-
-      print(response.body);
       setState(() {
         bookResult = newBook;
       });
@@ -87,6 +85,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.openLibrarySearchDoc.title),
+        backgroundColor: Colors.transparent,
       ),
       body: buildBody(),
     );
@@ -98,131 +97,15 @@ class _DetailsPageState extends State<DetailsPage> {
         child: CircularProgressIndicator(),
       );
     } else if (fetchOngoing == false && fetchCompleted) {
-      return Scrollbar(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 12),
-          child: ListView(
-            physics: BouncingScrollPhysics(),
-            children: [
-              SizedBox(height: 12),
-              Expanded(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.openLibrarySearchDoc.title,
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.w600),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'WRITTEN BY',
-                            style:
-                                TextStyle(color: Colors.white.withOpacity(0.7)),
-                          ),
-                          Text(
-                            widget.openLibrarySearchDoc.authorName.isNotEmpty
-                                ? widget.openLibrarySearchDoc.authorName.first
-                                : 'Unknown',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white.withOpacity(0.7),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            widget.openLibrarySearchDoc.firstPublishYear
-                                .toString(),
-                            style:
-                                TextStyle(color: Colors.white.withOpacity(0.7)),
-                          ),
-                          Text(
-                            bookResult.publishers.first.name.toUpperCase(),
-                            style:
-                                TextStyle(color: Colors.white.withOpacity(0.7)),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Spacer(),
-                    Container(
-                      height: 150,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        border: Border.all(
-                          color: Colors.white70,
-                        ),
-                        color: Colors.black54,
-                      ),
-                      child: Image.network(
-                        bookResult.cover.large,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    worksResult.description.toString(),
-                  ),
-                ],
-              ),
-              Divider(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'GENRE',
-                    style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  ),
-                  SizedBox(height: 10),
-                ],
-              ),
-              Divider(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'CHARACTERS',
-                    style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  ),
-                  SizedBox(height: 10),
-                ],
-              ),
-              Divider(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'PUBLISHERS',
-                    style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  ),
-                  SizedBox(height: 10),
-                ],
-              ),
-              MaterialButton(
-                color: Colors.green,
-                child: Text('Add to your books'),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      );
+      return AddBookDetails(
+          openLibrarySearchDoc: widget.openLibrarySearchDoc,
+          bookResult: bookResult,
+          worksResult: worksResult);
     } else if (fetchOngoing == false && error) {
-      return Center(
-        child: Text('Cannot get complete data \n Add anyway?'),
+      return AddBookDetails(
+        openLibrarySearchDoc: widget.openLibrarySearchDoc,
+        bookResult: OpenLibraryBook.noValues(),
+        worksResult: OpenLibraryWorks.noValues(),
       );
     } else {
       return Container();
