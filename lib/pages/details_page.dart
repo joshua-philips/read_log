@@ -35,7 +35,8 @@ class _DetailsPageState extends State<DetailsPage> {
     });
     try {
       await fetchLibraryWork(widget.openLibrarySearchDoc.key);
-      await fetchLibraryBook(widget.openLibrarySearchDoc.lccn.first);
+      await fetchLibraryBook(widget.openLibrarySearchDoc.lccn
+          .lastWhere((element) => element.length > 4));
       setState(() {
         fetchOngoing = false;
         fetchCompleted = true;
@@ -99,94 +100,81 @@ class _DetailsPageState extends State<DetailsPage> {
     } else if (fetchOngoing == false && fetchCompleted) {
       return Scrollbar(
         child: Padding(
-          padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
+          padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 12),
           child: ListView(
             physics: BouncingScrollPhysics(),
             children: [
               SizedBox(height: 12),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.openLibrarySearchDoc.title,
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'WRITTEN BY',
-                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                      ),
-                      Text(
-                        widget.openLibrarySearchDoc.authorName.isNotEmpty
-                            ? widget.openLibrarySearchDoc.authorName.first
-                            : 'Unknown',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white.withOpacity(0.7),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Row(
+              Expanded(
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(
+                            widget.openLibrarySearchDoc.title,
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'WRITTEN BY',
+                            style:
+                                TextStyle(color: Colors.white.withOpacity(0.7)),
+                          ),
+                          Text(
+                            widget.openLibrarySearchDoc.authorName.isNotEmpty
+                                ? widget.openLibrarySearchDoc.authorName.first
+                                : 'Unknown',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white.withOpacity(0.7),
+                            ),
+                          ),
+                          SizedBox(height: 10),
                           Text(
                             widget.openLibrarySearchDoc.firstPublishYear
                                 .toString(),
                             style:
                                 TextStyle(color: Colors.white.withOpacity(0.7)),
                           ),
-                          SizedBox(width: 5),
-                          Container(
-                            width: 5,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(60),
-                              color: Colors.green,
-                            ),
-                          ),
-                          SizedBox(width: 5),
                           Text(
-                            bookResult.numberOfPages.toString() +
-                                ' pages'.toString(),
+                            bookResult.publishers.first.name.toUpperCase(),
                             style:
                                 TextStyle(color: Colors.white.withOpacity(0.7)),
                           ),
                         ],
                       ),
-                      Text(
-                        bookResult.publishers.first.name.toUpperCase(),
-                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  Container(
-                    height: 150,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      border: Border.all(
-                        color: Colors.white70,
-                      ),
-                      color: Colors.black54,
                     ),
-                    child: Image.network(
-                      bookResult.cover.large,
-                      fit: BoxFit.cover,
+                    Spacer(),
+                    Container(
+                      height: 150,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        border: Border.all(
+                          color: Colors.white70,
+                        ),
+                        color: Colors.black54,
+                      ),
+                      child: Image.network(
+                        bookResult.cover.large,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               SizedBox(height: 15),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    worksResult.description['value'].toString(),
+                    worksResult.description.toString(),
                   ),
                 ],
               ),
@@ -213,6 +201,16 @@ class _DetailsPageState extends State<DetailsPage> {
                 ],
               ),
               Divider(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'PUBLISHERS',
+                    style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  ),
+                  SizedBox(height: 10),
+                ],
+              ),
               MaterialButton(
                 color: Colors.green,
                 child: Text('Add to your books'),
