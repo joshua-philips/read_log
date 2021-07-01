@@ -14,6 +14,7 @@ class Book {
   List<int> publishYear;
   List<Links> links;
   String review;
+  DateTime dateAdded;
 
   Book({
     required this.title,
@@ -29,6 +30,7 @@ class Book {
     required this.publishYear,
     required this.links,
     required this.review,
+    required this.dateAdded,
   });
 
   factory Book.noValues() {
@@ -46,6 +48,7 @@ class Book {
       subject: [],
       summary: '',
       time: [],
+      dateAdded: DateTime.now(),
     );
   }
 
@@ -70,6 +73,7 @@ class Book {
       publisher: json['publisher'] ?? [],
       subject: json['subject'] ?? [],
       links: newLinks,
+      dateAdded: json['dateAdded'].toDate() ?? DateTime.now(),
     );
   }
 
@@ -88,7 +92,8 @@ class Book {
     data['publisher'] = this.publisher;
     data['subject'] = this.subject;
     data['links'] = this.links.map((e) => e.toJson()).toList();
-    
+    data['dateAdded'] = this.dateAdded;
+
     return data;
   }
 }

@@ -1,3 +1,6 @@
+import 'package:books_log/components/horizontal_list.dart';
+import 'package:books_log/components/image_dialog.dart';
+import 'package:books_log/models/book.dart';
 import 'package:books_log/models/openlibrary_book.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/models/openlibrary_works.dart';
@@ -14,14 +17,14 @@ class AddBookDetails extends StatelessWidget {
     required this.worksResult,
   }) : super(key: key);
 
-  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController reviewController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
       thickness: 2,
       child: Padding(
-        padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
+        padding: const EdgeInsets.only(left: 12.0, right: 12),
         child: ListView(
           physics: BouncingScrollPhysics(),
           children: [
@@ -39,7 +42,7 @@ class AddBookDetails extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 25, fontWeight: FontWeight.w600),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 20),
                       Text(
                         'WRITTEN BY',
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
@@ -54,7 +57,7 @@ class AddBookDetails extends StatelessWidget {
                           color: Colors.white.withOpacity(0.7),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       Text(
                         openLibrarySearchDoc.firstPublishYear.toString(),
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
@@ -69,43 +72,49 @@ class AddBookDetails extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10),
-                Container(
-                  height: 150,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2),
-                    border: Border.all(
-                      color: Colors.white70,
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => buildImageDialog(
+                        context,
+                        bookResult.cover.large,
+                        openLibrarySearchDoc.title,
+                      ),
+                    );
+                  },
+                  child: Container(
+                    height: 150,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border.all(
+                        color: Colors.white70,
+                      ),
+                      color: Colors.black54,
                     ),
-                    color: Colors.black54,
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => buildImageDialog(
-                          context,
-                          bookResult.cover.large,
-                          openLibrarySearchDoc.title,
-                        ),
-                      );
-                    },
                     child: Image.network(
                       bookResult.cover.large,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Center(
-                        child: Text(
-                          openLibrarySearchDoc.title,
-                          textAlign: TextAlign.center,
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text(
+                            openLibrarySearchDoc.title,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                       loadingBuilder: (context, child, loadingProgress) =>
                           loadingProgress == null
                               ? child
                               : Center(
-                                  child: Text(
-                                    openLibrarySearchDoc.title,
-                                    textAlign: TextAlign.center,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Text(
+                                      openLibrarySearchDoc.title,
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
                                 ),
                     ),
@@ -114,31 +123,24 @@ class AddBookDetails extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            Divider(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'SUMMARY',
-                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                ),
-                SizedBox(height: 10),
-                worksResult.description != ''
-                    ? Text(
+            worksResult.description.toString().isNotEmpty
+                ? Divider()
+                : Container(),
+            worksResult.description.toString().isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'SUMMARY',
+                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
                         worksResult.description.toString(),
                       )
-                    : TextFormField(
-                        maxLines: 4,
-                        controller: descriptionController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white70),
-                          ),
-                        ),
-                      ),
-              ],
-            ),
+                    ],
+                  )
+                : Container(),
             openLibrarySearchDoc.subject.isNotEmpty ? Divider() : Container(),
             openLibrarySearchDoc.subject.isNotEmpty
                 ? Column(
@@ -295,6 +297,27 @@ class AddBookDetails extends StatelessWidget {
                   )
                 : Container(),
             Divider(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'REVIEW',
+                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  maxLines: 4,
+                  controller: reviewController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white70),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
@@ -309,45 +332,35 @@ class AddBookDetails extends StatelessWidget {
             MaterialButton(
               color: Colors.green,
               child: Text('Add to your books'),
-              onPressed: () {},
+              onPressed: () {
+                // TODO: Upload to firebase
+                try {
+                  Book newBook = Book(
+                    title: openLibrarySearchDoc.title,
+                    author: openLibrarySearchDoc.authorName.first.toString(),
+                    summary: worksResult.description.toString(),
+                    coverImage: bookResult.cover.large,
+                    firstPublishYear: openLibrarySearchDoc.firstPublishYear,
+                    person: List<String>.from(openLibrarySearchDoc.person),
+                    publishYear:
+                        List<int>.from(openLibrarySearchDoc.publishYear),
+                    subject: List<String>.from(openLibrarySearchDoc.subject),
+                    place: List<String>.from(openLibrarySearchDoc.place),
+                    time: List<String>.from(openLibrarySearchDoc.time),
+                    publisher:
+                        List<String>.from(openLibrarySearchDoc.publisher),
+                    links: bookResult.links,
+                    review: reviewController.text,
+                    dateAdded: DateTime.now(),
+                  );
+                  Navigator.pop(context);
+                } catch (e) {
+                  print(e);
+                }
+              },
             ),
+            SizedBox(height: 20),
           ],
-        ),
-      ),
-    );
-  }
-
-  Dialog buildImageDialog(BuildContext context, String image, String title) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      clipBehavior: Clip.hardEdge,
-      child: Container(
-        clipBehavior: Clip.hardEdge,
-        height: MediaQuery.of(context).size.height * 0.7,
-        width: MediaQuery.of(context).size.width * 0.7,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Image.network(
-          image,
-          fit: BoxFit.fill,
-          errorBuilder: (context, error, stackTrace) => Center(
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 30),
-            ),
-          ),
-          loadingBuilder: (context, child, loadingProgress) =>
-              loadingProgress == null
-                  ? child
-                  : Center(
-                      child: Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 30),
-                      ),
-                    ),
         ),
       ),
     );
@@ -372,47 +385,6 @@ class AddBookDetails extends StatelessWidget {
           onTap: () {
             // TODO: Open webpage from link
           },
-        ),
-      );
-    }
-    return widgetList;
-  }
-
-  List<Widget> horizontalDetailList(List<dynamic> detailList) {
-    List<Widget> widgetList = [];
-    for (int count = 0; count < detailList.length; count++) {
-      widgetList.add(
-        Container(
-          padding: EdgeInsets.only(left: 8, right: 8, top: 5),
-          margin: EdgeInsets.only(right: 10),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade600,
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: Text(
-            detailList[count].toString(),
-          ),
-        ),
-      );
-    }
-    return widgetList;
-  }
-
-  List<Widget> horizontalDetailListSorted(List<dynamic> detailList) {
-    detailList.sort();
-    List<Widget> widgetList = [];
-    for (int count = 0; count < detailList.length; count++) {
-      widgetList.add(
-        Container(
-          padding: EdgeInsets.only(left: 8, right: 8, top: 5),
-          margin: EdgeInsets.only(right: 10),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade600,
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: Text(
-            detailList[count].toString(),
-          ),
         ),
       );
     }
