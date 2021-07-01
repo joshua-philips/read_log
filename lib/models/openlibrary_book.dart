@@ -273,6 +273,13 @@ class Links {
       url: json['url'] ?? '',
     );
   }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['url'] = this.url;
+    return data;
+  }
 }
 
 class Identifiers {

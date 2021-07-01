@@ -60,13 +60,15 @@ class AddBookDetails extends StatelessWidget {
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
                       ),
                       Text(
-                        openLibrarySearchDoc.publisher.first.toUpperCase(),
+                        openLibrarySearchDoc.publisher.isNotEmpty
+                            ? openLibrarySearchDoc.publisher.first.toUpperCase()
+                            : '',
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(width: 5),
+                SizedBox(width: 10),
                 Container(
                   height: 150,
                   width: 100,
@@ -112,11 +114,12 @@ class AddBookDetails extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
+            Divider(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'DESCRIPTION',
+                  'SUMMARY',
                   style: TextStyle(color: Colors.white.withOpacity(0.7)),
                 ),
                 SizedBox(height: 10),
@@ -136,7 +139,7 @@ class AddBookDetails extends StatelessWidget {
                       ),
               ],
             ),
-            Divider(),
+            openLibrarySearchDoc.subject.isNotEmpty ? Divider() : Container(),
             openLibrarySearchDoc.subject.isNotEmpty
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +161,7 @@ class AddBookDetails extends StatelessWidget {
                     ],
                   )
                 : Container(),
-            Divider(),
+            openLibrarySearchDoc.place.isNotEmpty ? Divider() : Container(),
             openLibrarySearchDoc.place.isNotEmpty
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +183,7 @@ class AddBookDetails extends StatelessWidget {
                     ],
                   )
                 : Container(),
-            Divider(),
+            openLibrarySearchDoc.time.isNotEmpty ? Divider() : Container(),
             openLibrarySearchDoc.time.isNotEmpty
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,7 +205,7 @@ class AddBookDetails extends StatelessWidget {
                     ],
                   )
                 : Container(),
-            Divider(),
+            openLibrarySearchDoc.person.isNotEmpty ? Divider() : Container(),
             openLibrarySearchDoc.person.isNotEmpty
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,62 +227,81 @@ class AddBookDetails extends StatelessWidget {
                     ],
                   )
                 : Container(),
+            openLibrarySearchDoc.publisher.isNotEmpty ? Divider() : Container(),
+            openLibrarySearchDoc.publisher.isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'PUBLISHERS',
+                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                      ),
+                      SizedBox(height: 10),
+                      SizedBox(
+                        height: 30,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          physics: BouncingScrollPhysics(),
+                          children: horizontalDetailList(
+                              openLibrarySearchDoc.publisher),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
+            openLibrarySearchDoc.publishYear.isNotEmpty
+                ? Divider()
+                : Container(),
+            openLibrarySearchDoc.publishYear.isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'YEARS PUBLISHED',
+                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                      ),
+                      SizedBox(height: 10),
+                      SizedBox(
+                        height: 30,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          physics: BouncingScrollPhysics(),
+                          children: horizontalDetailListSorted(
+                              openLibrarySearchDoc.publishYear),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
+            bookResult.links.isNotEmpty ? Divider() : Container(),
+            bookResult.links.isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'EXTERNAL LINKS',
+                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                      ),
+                      SizedBox(height: 10),
+                      SizedBox(
+                        height: 30,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          physics: BouncingScrollPhysics(),
+                          children: listOfLinks(bookResult.links),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
             Divider(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Text(
-                  'PUBLISHERS',
-                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                ),
-                SizedBox(height: 10),
-                SizedBox(
-                  height: 30,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
-                    children:
-                        horizontalDetailList(openLibrarySearchDoc.publisher),
-                  ),
-                ),
-              ],
-            ),
-            Divider(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'YEARS PUBLISHED',
-                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                ),
-                SizedBox(height: 10),
-                SizedBox(
-                  height: 30,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
-                    children: horizontalDetailListSorted(
-                        openLibrarySearchDoc.publishYear),
-                  ),
-                ),
-              ],
-            ),
-            Divider(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'EXTERNAL LINKS',
-                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                ),
-                SizedBox(height: 10),
-                SizedBox(
-                  height: 30,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
-                    children: listOfLinks(bookResult.links),
-                  ),
+                  'Book data provided by Open Library',
+                  style: TextStyle(color: Colors.white.withOpacity(0.5)),
                 ),
               ],
             ),

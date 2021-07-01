@@ -1,1 +1,94 @@
-class Book {}
+import 'package:books_log/models/openlibrary_book.dart';
+
+class Book {
+  String title;
+  String author;
+  int firstPublishYear;
+  String coverImage;
+  String summary;
+  List<String> subject;
+  List<String> place;
+  List<String> time;
+  List<String> person;
+  List<String> publisher;
+  List<int> publishYear;
+  List<Links> links;
+  String review;
+
+  Book({
+    required this.title,
+    required this.author,
+    required this.firstPublishYear,
+    required this.coverImage,
+    required this.summary,
+    required this.subject,
+    required this.place,
+    required this.time,
+    required this.person,
+    required this.publisher,
+    required this.publishYear,
+    required this.links,
+    required this.review,
+  });
+
+  factory Book.noValues() {
+    return Book(
+      author: '',
+      coverImage: '',
+      firstPublishYear: 0,
+      title: '',
+      links: [],
+      person: [],
+      place: [],
+      publishYear: [],
+      publisher: [],
+      review: '',
+      subject: [],
+      summary: '',
+      time: [],
+    );
+  }
+
+  factory Book.fromJson(Map<String, dynamic> json) {
+    List<Links> newLinks = [];
+    json['links'] != null
+        ? json['links'].forEach((v) {
+            newLinks.add(new Links.fromJson(v));
+          })
+        : newLinks = [];
+    return Book(
+      title: json['title'] ?? '',
+      author: json['author'] ?? '',
+      coverImage: json['coverImage'] ?? '',
+      firstPublishYear: json['firstPublishYear'] ?? 0,
+      review: json['review'] ?? '',
+      publishYear: json['publishYear'] ?? [],
+      time: json['time'] ?? [],
+      summary: json['summary'] ?? '',
+      person: json['person'] ?? [],
+      place: json['place'] ?? [],
+      publisher: json['publisher'] ?? [],
+      subject: json['subject'] ?? [],
+      links: newLinks,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['author'] = this.author;
+    data['coverImage'] = this.coverImage;
+    data['firstPublishYear'] = this.firstPublishYear;
+    data['review'] = this.review;
+    data['publishYear'] = this.publishYear;
+    data['time'] = this.time;
+    data['summary'] = this.summary;
+    data['person'] = this.person;
+    data['place'] = this.place;
+    data['publisher'] = this.publisher;
+    data['subject'] = this.subject;
+    data['links'] = this.links.map((e) => e.toJson()).toList();
+    
+    return data;
+  }
+}
