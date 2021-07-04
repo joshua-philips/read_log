@@ -94,7 +94,9 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget buildBody() {
     if (fetchOngoing && fetchCompleted == false) {
       return Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: Colors.green,
+        ),
       );
     } else if (fetchOngoing == false && fetchCompleted) {
       return AddBookDetails(

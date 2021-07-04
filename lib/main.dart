@@ -1,4 +1,4 @@
-import 'package:books_log/pages/search_page.dart';
+import 'package:books_log/pages/my_books.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,11 +12,15 @@ class MyApp extends StatelessWidget {
       title: 'Book Log',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        primaryColor: Colors.black,
+        primaryColor: Colors.grey[900],
         accentColor: Colors.green,
         scaffoldBackgroundColor: Colors.grey[900],
+        indicatorColor: Colors.green,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.green,
+        ),
       ),
-      home: SearchPage(),
+      home: MyBooks(),
     );
   }
 }

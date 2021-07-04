@@ -49,53 +49,42 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Container(
-            padding: EdgeInsets.only(left: 8, right: 5),
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white.withOpacity(0.2),
-            ),
-            child: TextField(
-              controller: searchController,
-              onSubmitted: (text) {
-                if (searchController.text.isNotEmpty) {
-                  openLibrarySearch(searchController.text);
-                }
-              },
-              decoration: InputDecoration(
-                icon: Icon(Icons.search),
-                hintText: 'Search title, author',
-                border: InputBorder.none,
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    searchController.clear();
-                  },
-                  icon: Icon(Icons.close),
+        backgroundColor: Colors.transparent,
+        title: Container(
+          padding: EdgeInsets.only(left: 8, right: 5),
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.white.withOpacity(0.2),
+          ),
+          child: TextField(
+            controller: searchController,
+            autofocus: true,
+            onSubmitted: (text) {
+              if (searchController.text.isNotEmpty) {
+                openLibrarySearch(searchController.text);
+              }
+            },
+            decoration: InputDecoration(
+              icon: Icon(
+                Icons.search,
+                color: Theme.of(context).iconTheme.color?.withOpacity(0.7),
+              ),
+              hintText: 'Search title, author',
+              border: InputBorder.none,
+              suffixIcon: IconButton(
+                onPressed: () {
+                  searchController.clear();
+                },
+                icon: Icon(
+                  Icons.close,
+                  color: Theme.of(context).iconTheme.color?.withOpacity(0.7),
                 ),
               ),
             ),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 15, top: 5, bottom: 5),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (searchController.text.isNotEmpty) {
-                    openLibrarySearch(searchController.text);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                child: Text('Search'),
-              ),
-            ),
-          ]),
+        ),
+      ),
       body: buildSearchBody(),
     );
   }
@@ -103,7 +92,9 @@ class _SearchPageState extends State<SearchPage> {
   Widget buildSearchBody() {
     if (searchOngoing && searchCompleted == false) {
       return Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: Colors.green,
+        ),
       );
     } else if (searchOngoing == false && searchCompleted) {
       return results.numFound <= 0
@@ -126,15 +117,14 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          results.docs[index].authorName.isNotEmpty
-                              ? results.docs[index].authorName.first
-                              : results.docs[index].authorAlternativeName
-                                      .isNotEmpty
-                                  ? results
-                                      .docs[index].authorAlternativeName.first
-                                  : 'Unknown',
-                          style: TextStyle(fontSize: 20),
+                        child: SizedBox(
+                          height: 25,
+                          child: ListView(
+                            physics: BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            children:
+                                writersRow(results.docs[index].authorName),
+                          ),
                         ),
                       ),
                     ),
@@ -152,10 +142,41 @@ class _SearchPageState extends State<SearchPage> {
             );
     } else if (error) {
       return Center(
-        child: Text('Error. Try again'),
+        child: Text('Error. Check your internet connection'),
       );
     } else {
       return Container();
     }
+  }
+
+  List<Widget> writersRow(List<dynamic> authorName) {
+    List<Widget> writers = [];
+
+    if (authorName.isNotEmpty) {
+      for (int count = 0; count < authorName.length; count++) {
+        writers.add(
+          Text(
+            authorName[count],
+            style: TextStyle(fontSize: 20),
+          ),
+        );
+        if (count != authorName.length - 1) {
+          writers.add(
+            Text(
+              '/ ',
+              style: TextStyle(fontSize: 20),
+            ),
+          );
+        }
+      }
+    } else {
+      writers.add(
+        Text(
+          'Unknown',
+          style: TextStyle(fontSize: 20),
+        ),
+      );
+    }
+    return writers;
   }
 }
