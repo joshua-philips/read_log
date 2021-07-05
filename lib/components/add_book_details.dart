@@ -5,6 +5,7 @@ import 'package:books_log/models/book.dart';
 import 'package:books_log/models/openlibrary_book.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/models/openlibrary_works.dart';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 
 class AddBookDetails extends StatelessWidget {
@@ -130,8 +131,12 @@ class AddBookDetails extends StatelessWidget {
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
                       ),
                       SizedBox(height: 10),
-                      Text(
+                      ExpandableText(
                         worksResult.description.toString(),
+                        expandText: 'Read more',
+                        collapseText: 'Show less',
+                        maxLines: 5,
+                        linkColor: Colors.white.withOpacity(0.7),
                       )
                     ],
                   ),
