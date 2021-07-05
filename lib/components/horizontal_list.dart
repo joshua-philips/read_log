@@ -1,5 +1,6 @@
 import 'package:books_log/models/openlibrary_book.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 List<Widget> horizontalDetailList(List<dynamic> detailList) {
   List<Widget> widgetList = [];
@@ -58,8 +59,13 @@ List<Widget> listOfLinks(List<Links> list, BuildContext context) {
             list[count].title.toString(),
           ),
         ),
-        onTap: () {
-          // TODO: Open webpage from link
+        onTap: () async {
+          // TODO: Consider using webview instead
+          if (await canLaunch(list[count].url)) {
+            await launch(list[count].url);
+          } else {
+            print('Could not launch');
+          }
         },
       ),
     );
