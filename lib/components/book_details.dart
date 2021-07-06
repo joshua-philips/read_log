@@ -2,22 +2,14 @@ import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/components/image_dialog.dart';
 import 'package:books_log/components/list_section.dart';
 import 'package:books_log/models/book.dart';
-import 'package:books_log/models/openlibrary_book.dart';
-import 'package:books_log/models/openlibrary_search.dart';
-import 'package:books_log/models/openlibrary_works.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 
-class AddBookDetails extends StatelessWidget {
-  final Docs openLibrarySearchDoc;
-  final OpenLibraryBook bookResult;
-  final OpenLibraryWorks worksResult;
-  AddBookDetails({
-    Key? key,
-    required this.openLibrarySearchDoc,
-    required this.bookResult,
-    required this.worksResult,
-  }) : super(key: key);
+class BookDetails extends StatelessWidget {
+  final Book book;
+  final bool newBook;
+  BookDetails({Key? key, required this.book, required this.newBook})
+      : super(key: key);
 
   final TextEditingController reviewController = TextEditingController();
 
@@ -40,7 +32,7 @@ class AddBookDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        openLibrarySearchDoc.title,
+                        book.title,
                         style: TextStyle(
                             fontSize: 25, fontWeight: FontWeight.w600),
                       ),
@@ -52,12 +44,12 @@ class AddBookDetails extends StatelessWidget {
                       writersColumn(),
                       SizedBox(height: 10),
                       Text(
-                        openLibrarySearchDoc.firstPublishYear.toString(),
+                        book.firstPublishYear.toString(),
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
                       ),
                       Text(
-                        openLibrarySearchDoc.publisher.isNotEmpty
-                            ? openLibrarySearchDoc.publisher.first.toUpperCase()
+                        book.publisher.isNotEmpty
+                            ? book.publisher.first.toUpperCase()
                             : '',
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
                       ),
@@ -71,8 +63,8 @@ class AddBookDetails extends StatelessWidget {
                       context: context,
                       builder: (context) => buildImageDialog(
                         context,
-                        bookResult.cover.large,
-                        openLibrarySearchDoc.title,
+                        book.coverImage,
+                        book.title,
                       ),
                     );
                   },
@@ -87,13 +79,13 @@ class AddBookDetails extends StatelessWidget {
                       color: Colors.black54,
                     ),
                     child: Image.network(
-                      bookResult.cover.large,
+                      book.coverImage,
                       fit: BoxFit.fill,
                       errorBuilder: (context, error, stackTrace) => Center(
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Text(
-                            openLibrarySearchDoc.title,
+                            book.title,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -105,7 +97,7 @@ class AddBookDetails extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(3.0),
                                     child: Text(
-                                      openLibrarySearchDoc.title,
+                                      book.title,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -117,10 +109,8 @@ class AddBookDetails extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          worksResult.description.toString().isNotEmpty
-              ? Divider()
-              : Container(),
-          worksResult.description.toString().isNotEmpty
+          book.summary.isNotEmpty ? Divider() : Container(),
+          book.summary.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: Column(
@@ -132,7 +122,7 @@ class AddBookDetails extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       ExpandableText(
-                        worksResult.description.toString(),
+                        book.summary,
                         expandText: 'Read more',
                         collapseText: 'Show less',
                         maxLines: 5,
@@ -142,55 +132,53 @@ class AddBookDetails extends StatelessWidget {
                   ),
                 )
               : Container(),
-          openLibrarySearchDoc.subject.isNotEmpty ? Divider() : Container(),
-          openLibrarySearchDoc.subject.isNotEmpty
+          book.subject.isNotEmpty ? Divider() : Container(),
+          book.subject.isNotEmpty
               ? ListSection(
                   sectionTitle: 'SUBJECTS',
-                  children: horizontalDetailList(openLibrarySearchDoc.subject),
+                  children: horizontalDetailList(book.subject),
                 )
               : Container(),
-          openLibrarySearchDoc.place.isNotEmpty ? Divider() : Container(),
-          openLibrarySearchDoc.place.isNotEmpty
+          book.place.isNotEmpty ? Divider() : Container(),
+          book.place.isNotEmpty
               ? ListSection(
                   sectionTitle: 'PLACES',
-                  children: horizontalDetailList(openLibrarySearchDoc.place),
+                  children: horizontalDetailList(book.place),
                 )
               : Container(),
-          openLibrarySearchDoc.time.isNotEmpty ? Divider() : Container(),
-          openLibrarySearchDoc.time.isNotEmpty
+          book.time.isNotEmpty ? Divider() : Container(),
+          book.time.isNotEmpty
               ? ListSection(
                   sectionTitle: 'TIME',
-                  children: horizontalDetailList(openLibrarySearchDoc.time),
+                  children: horizontalDetailList(book.time),
                 )
               : Container(),
-          openLibrarySearchDoc.person.isNotEmpty ? Divider() : Container(),
-          openLibrarySearchDoc.person.isNotEmpty
+          book.person.isNotEmpty ? Divider() : Container(),
+          book.person.isNotEmpty
               ? ListSection(
                   sectionTitle: 'CHARACTERS',
-                  children: horizontalDetailList(openLibrarySearchDoc.person),
+                  children: horizontalDetailList(book.person),
                 )
               : Container(),
-          openLibrarySearchDoc.publisher.isNotEmpty ? Divider() : Container(),
-          openLibrarySearchDoc.publisher.isNotEmpty
+          book.publisher.isNotEmpty ? Divider() : Container(),
+          book.publisher.isNotEmpty
               ? ListSection(
                   sectionTitle: 'PUBLISHERS',
-                  children:
-                      horizontalDetailList(openLibrarySearchDoc.publisher),
+                  children: horizontalDetailList(book.publisher),
                 )
               : Container(),
-          openLibrarySearchDoc.publishYear.isNotEmpty ? Divider() : Container(),
-          openLibrarySearchDoc.publishYear.isNotEmpty
+          book.publishYear.isNotEmpty ? Divider() : Container(),
+          book.publishYear.isNotEmpty
               ? ListSection(
                   sectionTitle: 'YEARS PUBLISHED',
-                  children: horizontalDetailListSorted(
-                      openLibrarySearchDoc.publishYear),
+                  children: horizontalDetailListSorted(book.publishYear),
                 )
               : Container(),
-          bookResult.links.isNotEmpty ? Divider() : Container(),
-          bookResult.links.isNotEmpty
+          book.links.isNotEmpty ? Divider() : Container(),
+          book.links.isNotEmpty
               ? ListSection(
                   sectionTitle: 'EXTERNAL LINKS',
-                  children: listOfLinks(bookResult.links, context),
+                  children: listOfLinks(book.links, context),
                 )
               : Container(),
           Divider(),
@@ -233,11 +221,10 @@ class AddBookDetails extends StatelessWidget {
             padding: const EdgeInsets.only(left: 12.0, right: 12),
             child: MaterialButton(
               color: Colors.green,
-              child: Text('Add to your books'),
+              child: Text(newBook ? 'Add to your books' : 'Update'),
               onPressed: () {
-                // TODO: Upload to firebase
                 try {
-                  addToBooks();
+                  newBook ? addToBooks() : updateBook();
                   Navigator.pop(context);
                 } catch (e) {
                   print(e);
@@ -254,13 +241,11 @@ class AddBookDetails extends StatelessWidget {
   Column writersColumn() {
     List<Widget> writers = [];
 
-    if (openLibrarySearchDoc.authorName.isNotEmpty) {
-      for (int count = 0;
-          count < openLibrarySearchDoc.authorName.length;
-          count++) {
+    if (book.author.isNotEmpty) {
+      for (int count = 0; count < book.author.length; count++) {
         writers.add(
           Text(
-            openLibrarySearchDoc.authorName[count],
+            book.author[count],
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -287,21 +272,12 @@ class AddBookDetails extends StatelessWidget {
   }
 
   void addToBooks() {
-    Book newBook = Book(
-      title: openLibrarySearchDoc.title,
-      author: openLibrarySearchDoc.authorName.first.toString(),
-      summary: worksResult.description.toString(),
-      coverImage: bookResult.cover.large,
-      firstPublishYear: openLibrarySearchDoc.firstPublishYear,
-      person: List<String>.from(openLibrarySearchDoc.person),
-      publishYear: List<int>.from(openLibrarySearchDoc.publishYear),
-      subject: List<String>.from(openLibrarySearchDoc.subject),
-      place: List<String>.from(openLibrarySearchDoc.place),
-      time: List<String>.from(openLibrarySearchDoc.time),
-      publisher: List<String>.from(openLibrarySearchDoc.publisher),
-      links: bookResult.links,
-      review: reviewController.text,
-      dateAdded: DateTime.now(),
-    );
+    if (reviewController.text.isNotEmpty) {
+      book.updateReview(reviewController.text);
+    }
+    book.setDateAdded(DateTime.now());
+    // TODO: Upload book to firebase
   }
+
+  void updateBook() {}
 }

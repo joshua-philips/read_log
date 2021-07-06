@@ -2,7 +2,7 @@ import 'package:books_log/models/openlibrary_book.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-List<Widget> horizontalDetailList(List<dynamic> detailList) {
+List<Widget> horizontalDetailList(List detailList) {
   List<Widget> widgetList = [];
   for (int count = 0; count < detailList.length; count++) {
     widgetList.add(
@@ -22,7 +22,7 @@ List<Widget> horizontalDetailList(List<dynamic> detailList) {
   return widgetList;
 }
 
-List<Widget> horizontalDetailListSorted(List<dynamic> detailList) {
+List<Widget> horizontalDetailListSorted(List detailList) {
   detailList.sort();
   List<Widget> widgetList = [];
   for (int count = 0; count < detailList.length; count++) {

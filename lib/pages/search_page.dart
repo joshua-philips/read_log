@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:books_log/models/openlibrary_search.dart';
-import 'package:books_log/pages/details_page.dart';
+import 'package:books_log/pages/fetch_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -131,7 +131,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   onTap: () {
                     Route route = MaterialPageRoute(
-                      builder: (_) => DetailsPage(
+                      builder: (_) => FetchDetailsPage(
                         openLibrarySearchDoc: results.docs[index],
                       ),
                     );

@@ -1,22 +1,23 @@
 import 'dart:convert';
 
-import 'package:books_log/components/add_book_details.dart';
+import 'package:books_log/components/book_details.dart';
+import 'package:books_log/models/book.dart';
 import 'package:books_log/models/openlibrary_book.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/models/openlibrary_works.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class DetailsPage extends StatefulWidget {
+class FetchDetailsPage extends StatefulWidget {
   final Docs openLibrarySearchDoc;
-  const DetailsPage({Key? key, required this.openLibrarySearchDoc})
+  const FetchDetailsPage({Key? key, required this.openLibrarySearchDoc})
       : super(key: key);
 
   @override
-  _DetailsPageState createState() => _DetailsPageState();
+  _FetchDetailsPageState createState() => _FetchDetailsPageState();
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _FetchDetailsPageState extends State<FetchDetailsPage> {
   bool fetchOngoing = false;
   bool fetchCompleted = false;
   bool error = false;
@@ -99,15 +100,48 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       );
     } else if (fetchOngoing == false && fetchCompleted) {
-      return AddBookDetails(
-          openLibrarySearchDoc: widget.openLibrarySearchDoc,
-          bookResult: bookResult,
-          worksResult: worksResult);
+      Book newBook = Book(
+        title: widget.openLibrarySearchDoc.title,
+        author: List<String>.from(widget.openLibrarySearchDoc.authorName),
+        summary: worksResult.description.toString(),
+        coverImage: bookResult.cover.large,
+        firstPublishYear: widget.openLibrarySearchDoc.firstPublishYear,
+        person: List<String>.from(widget.openLibrarySearchDoc.person),
+        publishYear: List<int>.from(widget.openLibrarySearchDoc.publishYear),
+        subject: List<String>.from(widget.openLibrarySearchDoc.subject),
+        place: List<String>.from(widget.openLibrarySearchDoc.place),
+        time: List<String>.from(widget.openLibrarySearchDoc.time),
+        publisher: List<String>.from(widget.openLibrarySearchDoc.publisher),
+        links: bookResult.links,
+        review: '',
+        dateAdded: DateTime.now(),
+      );
+      return BookDetails(
+        book: newBook,
+        newBook: true,
+      );
     } else if (fetchOngoing == false && error) {
-      return AddBookDetails(
-        openLibrarySearchDoc: widget.openLibrarySearchDoc,
-        bookResult: OpenLibraryBook.noValues(),
-        worksResult: OpenLibraryWorks.noValues(),
+      worksResult = OpenLibraryWorks.noValues();
+      bookResult = OpenLibraryBook.noValues();
+      Book newBook = Book(
+        title: widget.openLibrarySearchDoc.title,
+        author: List<String>.from(widget.openLibrarySearchDoc.authorName),
+        summary: worksResult.description.toString(),
+        coverImage: bookResult.cover.large,
+        firstPublishYear: widget.openLibrarySearchDoc.firstPublishYear,
+        person: List<String>.from(widget.openLibrarySearchDoc.person),
+        publishYear: List<int>.from(widget.openLibrarySearchDoc.publishYear),
+        subject: List<String>.from(widget.openLibrarySearchDoc.subject),
+        place: List<String>.from(widget.openLibrarySearchDoc.place),
+        time: List<String>.from(widget.openLibrarySearchDoc.time),
+        publisher: List<String>.from(widget.openLibrarySearchDoc.publisher),
+        links: bookResult.links,
+        review: '',
+        dateAdded: DateTime.now(),
+      );
+      return BookDetails(
+        book: newBook,
+        newBook: true,
       );
     } else {
       return Container();

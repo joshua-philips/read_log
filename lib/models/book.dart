@@ -2,7 +2,7 @@ import 'package:books_log/models/openlibrary_book.dart';
 
 class Book {
   String title;
-  String author;
+  List<String> author;
   int firstPublishYear;
   String coverImage;
   String summary;
@@ -35,7 +35,7 @@ class Book {
 
   factory Book.noValues() {
     return Book(
-      author: '',
+      author: [],
       coverImage: '',
       firstPublishYear: 0,
       title: '',
@@ -61,7 +61,7 @@ class Book {
         : newLinks = [];
     return Book(
       title: json['title'] ?? '',
-      author: json['author'] ?? '',
+      author: json['author'] ?? [],
       coverImage: json['coverImage'] ?? '',
       firstPublishYear: json['firstPublishYear'] ?? 0,
       review: json['review'] ?? '',
@@ -95,5 +95,13 @@ class Book {
     data['dateAdded'] = this.dateAdded;
 
     return data;
+  }
+
+  void updateReview(String review) {
+    this.review = review;
+  }
+
+  void setDateAdded(DateTime date) {
+    this.dateAdded = date;
   }
 }
