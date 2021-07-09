@@ -1,4 +1,4 @@
-import 'package:books_log/pages/my_books.dart';
+import 'package:books_log/pages/authentication_pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           cursorColor: Colors.green,
         ),
       ),
-      home: MyBooks(),
+      home: LoginPage(),
     );
   }
 }

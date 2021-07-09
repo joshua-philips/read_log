@@ -142,7 +142,7 @@ class _SearchPageState extends State<SearchPage> {
             );
     } else if (error) {
       return Center(
-        child: Text('Error. Check your internet connection'),
+        child: Text('Server error'),
       );
     } else {
       return Container();

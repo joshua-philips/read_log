@@ -52,7 +52,7 @@ List<Widget> listOfLinks(List<Links> list, BuildContext context) {
           padding: EdgeInsets.only(left: 8, right: 8, top: 5),
           margin: EdgeInsets.only(right: 10),
           decoration: BoxDecoration(
-            color: Colors.grey.shade600,
+            color: Color(0xff07446C),
             borderRadius: BorderRadius.circular(2),
           ),
           child: Text(
