@@ -1,9 +1,30 @@
-import 'package:books_log/components/auth_text_formfield.dart';
-import 'package:books_log/pages/my_books.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class RegisterPage extends StatelessWidget {
+import 'package:books_log/components/auth_text_formfield.dart';
+import 'package:books_log/models/user_profile.dart';
+import 'package:books_log/pages/my_books.dart';
+import 'package:books_log/services/auth_service.dart';
+import 'package:books_log/services/firestore_service.dart';
+import 'package:books_log/services/storage_service.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
+class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
+
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  File? imageFile;
+  Future<void> selectAndPickImage() async {
+    setState(() async {
+      imageFile =
+          (await ImagePicker().getImage(source: ImageSource.gallery)) as File;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +67,19 @@ class RegisterPage extends StatelessWidget {
                 child: Column(
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        selectAndPickImage();
+                      },
                       child: CircleAvatar(
                         radius: 60,
-                        child: Icon(
-                          Icons.add_a_photo_rounded,
-                          size: 40,
-                        ),
+                        child: imageFile == null
+                            ? Icon(
+                                Icons.add_a_photo_rounded,
+                                size: 40,
+                              )
+                            : null,
+                        backgroundImage:
+                            imageFile == null ? null : FileImage(imageFile!),
                       ),
                     ),
                     AuthTextFormField(
@@ -99,7 +126,8 @@ class RegisterPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            registerButton(formKey, context),
+            registerButton(formKey, nameController.text, emailController.text,
+                passwordController.text, imageFile!, context),
             SizedBox(height: 30),
             loginButton(context),
             SizedBox(height: 30),
@@ -110,7 +138,8 @@ class RegisterPage extends StatelessWidget {
   }
 }
 
-Widget registerButton(GlobalKey<FormState> formKey, BuildContext context) {
+Widget registerButton(GlobalKey<FormState> formKey, String name, String email,
+    String password, File image, BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
@@ -125,7 +154,7 @@ Widget registerButton(GlobalKey<FormState> formKey, BuildContext context) {
         onPressed: () {
           if (formKey.currentState!.validate()) {
             print('Register button');
-            // TODO: Register
+            register(name, email, password, image, context);
             Route route = MaterialPageRoute(builder: (context) => MyBooks());
             Navigator.popUntil(context, (route) => !Navigator.canPop(context));
             Navigator.of(context).pushReplacement(route);
@@ -142,6 +171,29 @@ Widget registerButton(GlobalKey<FormState> formKey, BuildContext context) {
       ),
     ],
   );
+}
+
+Future<void> register(String name, String email, String password, File image,
+    BuildContext context) async {
+  try {
+    String photoUrl =
+        await context.read<StorageService>().uploadProfilePhoto(image);
+    await context
+        .read<AuthService>()
+        .createUserWithEmailAndPassword(email, password, name, photoUrl);
+    Map<String, dynamic> data = {
+      'userName': name,
+      'email': email,
+      'uid': context.read<AuthService>().getCurrentUID(),
+      'profilePhoto': photoUrl,
+    };
+    context.read<UserProfile>().updateEntireProfile(data);
+    await context
+        .read<FirestoreService>()
+        .uploadUserProfile(context.read<UserProfile>());
+  } catch (e) {
+    print(e);
+  }
 }
 
 Widget loginButton(BuildContext context) {

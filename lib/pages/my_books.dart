@@ -43,7 +43,7 @@ class _MyBooksState extends State<MyBooks> {
                         color:
                             Theme.of(context).iconTheme.color?.withOpacity(0.7),
                       ),
-                      hintText: 'Search title, author',
+                      hintText: 'Search my books',
                       border: InputBorder.none,
                       suffixIcon: IconButton(
                         onPressed: () {

@@ -1,8 +1,10 @@
 import 'package:books_log/components/auth_text_formfield.dart';
+import 'package:books_log/main.dart';
 import 'package:books_log/pages/authentication_pages/password_reset_page.dart';
 import 'package:books_log/pages/authentication_pages/register_page.dart';
-import 'package:books_log/pages/my_books.dart';
+import 'package:books_log/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -129,7 +131,8 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30),
-            loginButton(formKey, context),
+            loginButton(formKey, emailController.text, passwordController.text,
+                context),
             SizedBox(height: 50),
             register(context),
           ],
@@ -139,7 +142,8 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-Widget loginButton(GlobalKey<FormState> formKey, BuildContext context) {
+Widget loginButton(GlobalKey<FormState> formKey, String email, String password,
+    BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
@@ -159,18 +163,28 @@ Widget loginButton(GlobalKey<FormState> formKey, BuildContext context) {
             fontWeight: FontWeight.w500,
           ),
         ),
-        onPressed: () {
+        onPressed: () async {
           if (formKey.currentState!.validate()) {
-            print('Login button');
-            // TODO: Login
-            Route route = MaterialPageRoute(builder: (context) => MyBooks());
+            await login(email, password, context);
+            // Route route = MaterialPageRoute(builder: (context) => MyBooks());
             Navigator.popUntil(context, (route) => !Navigator.canPop(context));
-            Navigator.of(context).pushReplacement(route);
+            // Navigator.of(context).pushReplacement(route);
           }
         },
       ),
     ],
   );
+}
+
+Future<void> login(String email, String password, BuildContext context) async {
+  try {
+    await context
+        .read<AuthService>()
+        .loginWithEmailAndPassword(email, password);
+    initializeProfile(context);
+  } catch (e) {
+    print(e);
+  }
 }
 
 Widget register(BuildContext context) {
