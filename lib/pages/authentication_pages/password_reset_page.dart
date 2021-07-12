@@ -57,42 +57,33 @@ class PasswordResetPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30),
-            sendResetMailButton(formKey, context),
+            TextButton(
+              style: TextButton.styleFrom(
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                backgroundColor: Color(0xff07446C),
+              ),
+              child: Text(
+                "Send reset email",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  print('Reset button');
+                  // TODO: Password Reset
+                  Navigator.pop(context);
+                }
+              },
+            ),
           ],
         ),
       ),
     );
   }
-}
-
-Widget sendResetMailButton(GlobalKey<FormState> formKey, BuildContext context) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      TextButton(
-        style: TextButton.styleFrom(
-          shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(8),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-          backgroundColor: Color(0xff07446C),
-        ),
-        child: Text(
-          "Send reset email",
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        onPressed: () {
-          if (formKey.currentState!.validate()) {
-            print('Reset button');
-            // TODO: Password Reset
-            Navigator.pop(context);
-          }
-        },
-      ),
-    ],
-  );
 }

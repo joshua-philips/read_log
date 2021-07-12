@@ -1,4 +1,3 @@
-import 'package:books_log/models/user_profile.dart';
 import 'package:books_log/pages/authentication_pages/login_page.dart';
 import 'package:books_log/pages/my_books.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -59,8 +58,6 @@ class _MyAppState extends State<MyApp> {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<UserProfile>(
-            create: (_) => UserProfile.noValues()),
         Provider<AuthService>(create: (_) => AuthService()),
         Provider<FirestoreService>(create: (_) => FirestoreService()),
         Provider<StorageService>(create: (_) => StorageService()),
@@ -93,23 +90,17 @@ class HomeController extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.hasData) {
-            initializeProfile(context);
             return MyBooks();
           } else {
             return LoginPage();
           }
         }
         return Scaffold(
-          body: Center(),
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       },
     );
   }
-}
-
-Future<void> initializeProfile(BuildContext context) async {
-  Map<String, dynamic>? profileData = await context
-      .read<FirestoreService>()
-      .getuserProfile(context.read<AuthService>().getCurrentUID());
-  context.read<UserProfile>().updateEntireProfile(profileData!);
 }

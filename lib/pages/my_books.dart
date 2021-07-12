@@ -1,5 +1,7 @@
 import 'package:books_log/pages/search_page.dart';
+import 'package:books_log/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyBooks extends StatefulWidget {
   const MyBooks({Key? key}) : super(key: key);
@@ -23,6 +25,16 @@ class _MyBooksState extends State<MyBooks> {
             ),
             elevation: 0,
             backgroundColor: Colors.transparent,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.logout),
+                onPressed: () {
+                  context.read<AuthService>().signOut();
+                  Navigator.popUntil(
+                      context, (route) => !Navigator.canPop(context));
+                },
+              ),
+            ],
           ),
           SliverList(
             delegate: SliverChildListDelegate(
@@ -59,6 +71,20 @@ class _MyBooksState extends State<MyBooks> {
                       ),
                     ),
                   ),
+                ),
+                Container(
+                  child:
+                      context.read<AuthService>().getCurrentUser().photoURL !=
+                              null
+                          ? Image.network(
+                              context
+                                  .read<AuthService>()
+                                  .getCurrentUser()
+                                  .photoURL!,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Text('Error'),
+                            )
+                          : Container(),
                 ),
               ],
             ),

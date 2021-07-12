@@ -5,16 +5,15 @@ class AuthService {
 
   Stream<User?> get onAuthStateChanged => _firebaseAuth.idTokenChanges();
 
-  String getCurrentUID() {
-    return _firebaseAuth.currentUser!.uid;
+  User getCurrentUser() {
+    return _firebaseAuth.currentUser!;
   }
 
   Future<void> createUserWithEmailAndPassword(
-      String email, String password, String name, String profilePhoto) async {
+      String email, String password, String name) async {
     final currentUser = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
     await currentUser.user!.updateDisplayName(name);
-    await currentUser.user!.updatePhotoURL(profilePhoto);
   }
 
   Future<void> loginWithEmailAndPassword(String email, String password) async {
@@ -24,5 +23,9 @@ class AuthService {
 
   Future<void> signOut() {
     return _firebaseAuth.signOut();
+  }
+
+  Future<void> setProfilePhoto(String photoUrl) async {
+    await _firebaseAuth.currentUser!.updatePhotoURL(photoUrl);
   }
 }

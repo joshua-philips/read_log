@@ -1,10 +1,7 @@
 import 'dart:io';
 
 import 'package:books_log/components/auth_text_formfield.dart';
-import 'package:books_log/models/user_profile.dart';
-import 'package:books_log/pages/my_books.dart';
 import 'package:books_log/services/auth_service.dart';
-import 'package:books_log/services/firestore_service.dart';
 import 'package:books_log/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,21 +15,16 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  File? imageFile;
-  Future<void> selectAndPickImage() async {
-    setState(() async {
-      imageFile =
-          (await ImagePicker().getImage(source: ImageSource.gallery)) as File;
-    });
-  }
-
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController cPasswordController = TextEditingController();
+  final _picker = ImagePicker();
+  late File imageFile;
+  bool photoSet = false;
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController cPasswordController = TextEditingController();
     return Scaffold(
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -68,18 +60,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        selectAndPickImage();
+                        selectImage();
                       },
                       child: CircleAvatar(
                         radius: 60,
-                        child: imageFile == null
-                            ? Icon(
+                        child: photoSet
+                            ? Container()
+                            : Icon(
                                 Icons.add_a_photo_rounded,
                                 size: 40,
-                              )
-                            : null,
-                        backgroundImage:
-                            imageFile == null ? null : FileImage(imageFile!),
+                              ),
+                        backgroundImage: photoSet ? FileImage(imageFile) : null,
                       ),
                     ),
                     AuthTextFormField(
@@ -126,97 +117,84 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             SizedBox(height: 10),
-            registerButton(formKey, nameController.text, emailController.text,
-                passwordController.text, imageFile!, context),
+            TextButton(
+              style: TextButton.styleFrom(
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                backgroundColor: Color(0xff07446C),
+              ),
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  await register(context);
+                  Navigator.popUntil(
+                      context, (route) => !Navigator.canPop(context));
+                }
+              },
+              child: Text(
+                "Register",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
             SizedBox(height: 30),
-            loginButton(context),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Already have an account? ",
+                  style: TextStyle(fontSize: 20, color: Color(0xff757575)),
+                ),
+                GestureDetector(
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ),
             SizedBox(height: 30),
           ],
         ),
       ),
     );
   }
-}
 
-Widget registerButton(GlobalKey<FormState> formKey, String name, String email,
-    String password, File image, BuildContext context) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      TextButton(
-        style: TextButton.styleFrom(
-          shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(8),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-          backgroundColor: Color(0xff07446C),
-        ),
-        onPressed: () {
-          if (formKey.currentState!.validate()) {
-            print('Register button');
-            register(name, email, password, image, context);
-            Route route = MaterialPageRoute(builder: (context) => MyBooks());
-            Navigator.popUntil(context, (route) => !Navigator.canPop(context));
-            Navigator.of(context).pushReplacement(route);
-          }
-        },
-        child: Text(
-          "Register",
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-Future<void> register(String name, String email, String password, File image,
-    BuildContext context) async {
-  try {
-    String photoUrl =
-        await context.read<StorageService>().uploadProfilePhoto(image);
-    await context
-        .read<AuthService>()
-        .createUserWithEmailAndPassword(email, password, name, photoUrl);
-    Map<String, dynamic> data = {
-      'userName': name,
-      'email': email,
-      'uid': context.read<AuthService>().getCurrentUID(),
-      'profilePhoto': photoUrl,
-    };
-    context.read<UserProfile>().updateEntireProfile(data);
-    await context
-        .read<FirestoreService>()
-        .uploadUserProfile(context.read<UserProfile>());
-  } catch (e) {
-    print(e);
+  Future<void> register(BuildContext context) async {
+    try {
+      await context.read<AuthService>().createUserWithEmailAndPassword(
+            emailController.text,
+            passwordController.text,
+            nameController.text,
+          );
+      String photoUrl = await context
+          .read<StorageService>()
+          .uploadProfilePhoto(imageFile, emailController.text)
+          .whenComplete(() => print('upload complete'));
+      await context.read<AuthService>().setProfilePhoto(photoUrl);
+    } catch (e) {
+      print(e);
+    }
   }
-}
 
-Widget loginButton(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Text(
-        "Already have an account? ",
-        style: TextStyle(fontSize: 20, color: Color(0xff757575)),
-      ),
-      GestureDetector(
-        child: Text(
-          "Login",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
-          ),
-        ),
-        onTap: () {
-          Navigator.pop(context);
-        },
-      )
-    ],
-  );
+  Future<void> selectImage() async {
+    final PickedFile? pickedFile =
+        await _picker.getImage(source: ImageSource.gallery);
+    final File file = File(pickedFile!.path);
+    setState(() {
+      imageFile = file;
+      photoSet = true;
+    });
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:books_log/components/auth_text_formfield.dart';
-import 'package:books_log/main.dart';
 import 'package:books_log/pages/authentication_pages/password_reset_page.dart';
 import 'package:books_log/pages/authentication_pages/register_page.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -131,84 +130,70 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30),
-            loginButton(formKey, emailController.text, passwordController.text,
-                context),
+            TextButton(
+              style: TextButton.styleFrom(
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                backgroundColor: Color(0xff07446C),
+              ),
+              child: Text(
+                "Login",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  await login(
+                      emailController.text, passwordController.text, context);
+                  Navigator.popUntil(
+                      context, (route) => !Navigator.canPop(context));
+                }
+              },
+            ),
             SizedBox(height: 50),
-            register(context),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Don\'t have an account? ",
+                  style: TextStyle(fontSize: 20, color: Color(0xff757575)),
+                ),
+                GestureDetector(
+                  child: Text(
+                    "Register",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                  onTap: () {
+                    Route route =
+                        MaterialPageRoute(builder: (context) => RegisterPage());
+                    Navigator.push(context, route);
+                  },
+                )
+              ],
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-Widget loginButton(GlobalKey<FormState> formKey, String email, String password,
-    BuildContext context) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      TextButton(
-        style: TextButton.styleFrom(
-          shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(8),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-          backgroundColor: Color(0xff07446C),
-        ),
-        child: Text(
-          "Login",
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        onPressed: () async {
-          if (formKey.currentState!.validate()) {
-            await login(email, password, context);
-            // Route route = MaterialPageRoute(builder: (context) => MyBooks());
-            Navigator.popUntil(context, (route) => !Navigator.canPop(context));
-            // Navigator.of(context).pushReplacement(route);
-          }
-        },
-      ),
-    ],
-  );
-}
-
-Future<void> login(String email, String password, BuildContext context) async {
-  try {
-    await context
-        .read<AuthService>()
-        .loginWithEmailAndPassword(email, password);
-    initializeProfile(context);
-  } catch (e) {
-    print(e);
+  Future<void> login(
+      String email, String password, BuildContext context) async {
+    try {
+      await context
+          .read<AuthService>()
+          .loginWithEmailAndPassword(email, password);
+    } catch (e) {
+      print(e);
+    }
   }
-}
-
-Widget register(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Text(
-        "Don\'t have an account? ",
-        style: TextStyle(fontSize: 20, color: Color(0xff757575)),
-      ),
-      GestureDetector(
-        child: Text(
-          "Register",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
-          ),
-        ),
-        onTap: () {
-          Route route = MaterialPageRoute(builder: (context) => RegisterPage());
-          Navigator.push(context, route);
-        },
-      )
-    ],
-  );
 }
