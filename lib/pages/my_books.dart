@@ -26,6 +26,22 @@ class _MyBooksState extends State<MyBooks> {
             elevation: 0,
             backgroundColor: Colors.transparent,
             actions: [
+              Container(
+                clipBehavior: Clip.hardEdge,
+                margin: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: context.read<AuthService>().getCurrentUser().photoURL !=
+                        null
+                    ? Image.network(
+                        context.read<AuthService>().getCurrentUser().photoURL!,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(),
+              ),
               IconButton(
                 icon: Icon(Icons.logout),
                 onPressed: () {
@@ -71,20 +87,6 @@ class _MyBooksState extends State<MyBooks> {
                       ),
                     ),
                   ),
-                ),
-                Container(
-                  child:
-                      context.read<AuthService>().getCurrentUser().photoURL !=
-                              null
-                          ? Image.network(
-                              context
-                                  .read<AuthService>()
-                                  .getCurrentUser()
-                                  .photoURL!,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Text('Error'),
-                            )
-                          : Container(),
                 ),
               ],
             ),
