@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:books_log/components/auth_text_formfield.dart';
-import 'package:books_log/components/dialogs.dart';
+import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/storage_service.dart';
 import 'package:flutter/material.dart';

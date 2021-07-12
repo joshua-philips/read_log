@@ -1,5 +1,5 @@
 import 'package:books_log/components/auth_text_formfield.dart';
-import 'package:books_log/components/dialogs.dart';
+import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/pages/authentication_pages/password_reset_page.dart';
 import 'package:books_log/pages/authentication_pages/register_page.dart';
 import 'package:books_log/services/auth_service.dart';

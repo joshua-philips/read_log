@@ -88,6 +88,17 @@ class _MyBooksState extends State<MyBooks> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    'Hello ' +
+                        context
+                            .read<AuthService>()
+                            .getCurrentUser()
+                            .displayName!,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
               ],
             ),
           ),

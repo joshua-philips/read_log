@@ -1,9 +1,13 @@
+import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/components/image_dialog.dart';
 import 'package:books_log/components/list_section.dart';
 import 'package:books_log/models/book.dart';
+import 'package:books_log/services/auth_service.dart';
+import 'package:books_log/services/firestore_service.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BookDetails extends StatelessWidget {
   final Book book;
@@ -222,12 +226,17 @@ class BookDetails extends StatelessWidget {
             child: MaterialButton(
               color: Colors.green,
               child: Text(newBook ? 'Add to your books' : 'Update'),
-              onPressed: () {
-                try {
-                  newBook ? addToBooks() : updateBook();
+              onPressed: () async {
+                showLoadingDialog(context);
+                String returnedString = await addToBooks(context);
+                if (returnedString != 'done') {
                   Navigator.pop(context);
-                } catch (e) {
-                  print(e);
+                  showMessageDialog(context, 'Error adding book',
+                      'Could not add to my books. Please try again');
+                } else {
+                  showMessageSnackBar(context, 'Added to your books');
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 }
               },
             ),
@@ -271,13 +280,25 @@ class BookDetails extends StatelessWidget {
     );
   }
 
-  void addToBooks() {
+  Future<String> addToBooks(BuildContext context) async {
+    AuthService authService = context.read<AuthService>();
+    FirestoreService firestoreService = context.read<FirestoreService>();
     if (reviewController.text.isNotEmpty) {
       book.updateReview(reviewController.text);
     }
     book.setDateAdded(DateTime.now());
-    // TODO: Upload book to firebase
+
+    try {
+      firestoreService.uploadBook(book, authService.getCurrentUser().uid);
+      return 'done';
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
   }
 
-  void updateBook() {}
+  Future<String> updateBook() async {
+    // TODO: Update book
+    return 'done';
+  }
 }

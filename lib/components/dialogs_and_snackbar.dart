@@ -39,3 +39,29 @@ void showMessageDialog(BuildContext context, String title, String message) {
     ),
   );
 }
+
+void showMessageSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    duration: Duration(seconds: 4),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5),
+    ),
+    content: Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+              child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                message,
+                style: TextStyle(fontWeight: FontWeight.w600),
+              )
+            ],
+          )),
+        ],
+      ),
+    ),
+  ));
+}
