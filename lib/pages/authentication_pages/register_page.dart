@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:books_log/components/auth_text_formfield.dart';
+import 'package:books_log/components/dialogs.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/storage_service.dart';
 import 'package:flutter/material.dart';
@@ -126,10 +127,19 @@ class _RegisterPageState extends State<RegisterPage> {
                 backgroundColor: Color(0xff07446C),
               ),
               onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  await register(context);
-                  Navigator.popUntil(
-                      context, (route) => !Navigator.canPop(context));
+                if (formKey.currentState!.validate() && photoSet) {
+                  showLoadingDialog(context);
+                  String returnedString = await register(context);
+                  if (returnedString != 'done') {
+                    Navigator.pop(context);
+                    showMessageDialog(context, 'Error', returnedString);
+                  } else {
+                    Navigator.popUntil(
+                        context, (route) => !Navigator.canPop(context));
+                  }
+                } else if (photoSet == false) {
+                  showMessageDialog(context, 'No profile picture',
+                      'Please select a profile photo');
                 }
               },
               child: Text(
@@ -171,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<void> register(BuildContext context) async {
+  Future<String> register(BuildContext context) async {
     try {
       await context.read<AuthService>().createUserWithEmailAndPassword(
             emailController.text,
@@ -183,8 +193,10 @@ class _RegisterPageState extends State<RegisterPage> {
           .uploadProfilePhoto(imageFile, emailController.text)
           .whenComplete(() => print('upload complete'));
       await context.read<AuthService>().setProfilePhoto(photoUrl);
-    } catch (e) {
+      return 'done';
+    } on Exception catch (e) {
       print(e);
+      return e.toString();
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:books_log/components/auth_text_formfield.dart';
+import 'package:books_log/components/dialogs.dart';
 import 'package:books_log/pages/authentication_pages/password_reset_page.dart';
 import 'package:books_log/pages/authentication_pages/register_page.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -148,10 +149,16 @@ class LoginPage extends StatelessWidget {
               ),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  await login(
+                  showLoadingDialog(context);
+                  String returnedString = await login(
                       emailController.text, passwordController.text, context);
-                  Navigator.popUntil(
-                      context, (route) => !Navigator.canPop(context));
+                  if (returnedString != 'done') {
+                    Navigator.pop(context);
+                    showMessageDialog(context, 'Login Error', returnedString);
+                  } else {
+                    Navigator.popUntil(
+                        context, (route) => !Navigator.canPop(context));
+                  }
                 }
               },
             ),
@@ -186,14 +193,16 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Future<void> login(
+  Future<String> login(
       String email, String password, BuildContext context) async {
     try {
       await context
           .read<AuthService>()
           .loginWithEmailAndPassword(email, password);
+      return 'done';
     } catch (e) {
       print(e);
+      return e.toString();
     }
   }
 }
