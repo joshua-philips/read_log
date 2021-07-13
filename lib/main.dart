@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
 
     // Show a loader until FlutterFire is initialized
     if (!_initialized) {
-      return CircularProgressIndicator();
+      return Container();
     }
 
     return MultiProvider(

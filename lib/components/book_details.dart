@@ -227,16 +227,15 @@ class BookDetails extends StatelessWidget {
               color: Colors.green,
               child: Text(newBook ? 'Add to your books' : 'Update'),
               onPressed: () async {
-                showLoadingDialog(context);
-                String returnedString = await addToBooks(context);
-                if (returnedString != 'done') {
-                  Navigator.pop(context);
-                  showMessageDialog(context, 'Error adding book',
-                      'Could not add to my books. Please try again');
-                } else {
-                  showMessageSnackBar(context, 'Added to your books');
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                if (newBook) {
+                  String returnedString = await addToBooks(context);
+                  if (returnedString != 'done') {
+                    showMessageDialog(context, 'Error adding book',
+                        'Could not add to my books. Please try again');
+                  } else {
+                    showMessageSnackBar(context, 'Added to your books');
+                    Navigator.pop(context);
+                  }
                 }
               },
             ),

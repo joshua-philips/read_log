@@ -1,5 +1,10 @@
+import 'package:books_log/components/book_image.dart';
+import 'package:books_log/models/book.dart';
 import 'package:books_log/pages/search_page.dart';
 import 'package:books_log/services/auth_service.dart';
+import 'package:books_log/services/firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +19,7 @@ class _MyBooksState extends State<MyBooks> {
   TextEditingController searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final User user = context.read<AuthService>().getCurrentUser();
     return Scaffold(
       body: CustomScrollView(
         physics: BouncingScrollPhysics(),
@@ -32,10 +38,9 @@ class _MyBooksState extends State<MyBooks> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: context.read<AuthService>().getCurrentUser().photoURL !=
-                        null
+                child: user.photoURL != null
                     ? Image.network(
-                        context.read<AuthService>().getCurrentUser().photoURL!,
+                        user.photoURL!,
                         width: 50,
                         height: 50,
                         fit: BoxFit.cover,
@@ -57,7 +62,7 @@ class _MyBooksState extends State<MyBooks> {
               [
                 Container(
                   padding: EdgeInsets.only(left: 8, right: 5),
-                  margin: EdgeInsets.all(12),
+                  margin: EdgeInsets.only(left: 12, right: 12, top: 12),
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
@@ -89,14 +94,37 @@ class _MyBooksState extends State<MyBooks> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Hello ' +
-                        context
-                            .read<AuthService>()
-                            .getCurrentUser()
-                            .displayName!,
-                    style: TextStyle(fontSize: 20),
+                  padding: const EdgeInsets.only(left: 12, right: 12),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: context
+                        .read<FirestoreService>()
+                        .myBooksStream(user.uid),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Something went wrong');
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Text("Loading...");
+                      }
+
+                      return GridView.count(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 0.65,
+                        children: snapshot.data!.docs
+                            .map((DocumentSnapshot document) {
+                          Map<String, dynamic> data =
+                              document.data() as Map<String, dynamic>;
+                          Book book = Book.fromJson(data);
+                          return BookImage(book: book);
+                        }).toList(),
+                      );
+                    },
                   ),
                 ),
               ],

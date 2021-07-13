@@ -149,13 +149,14 @@ class LoginPage extends StatelessWidget {
               ),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  showLoadingDialog(context);
+                  // showLoadingDialog(context);
                   String returnedString = await login(
                       emailController.text, passwordController.text, context);
                   if (returnedString != 'done') {
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                     showMessageDialog(context, 'Login Error', returnedString);
                   } else {
+                    // Navigator.pop(context);
                     Navigator.popUntil(
                         context, (route) => !Navigator.canPop(context));
                   }

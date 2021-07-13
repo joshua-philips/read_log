@@ -11,4 +11,13 @@ class FirestoreService {
         .collection('books')
         .add(book.toJson());
   }
+
+  Stream<QuerySnapshot> myBooksStream(String uid) async* {
+    yield* _firestore
+        .collection('user')
+        .doc(uid)
+        .collection('books')
+        .orderBy('dateAdded')
+        .snapshots();
+  }
 }
