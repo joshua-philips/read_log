@@ -309,7 +309,7 @@ class _BookDetailsState extends State<BookDetails> {
         widget.book.updateReview(reviewController.text);
       });
       try {
-        await firestoreService.updateBook(
+        firestoreService.updateBook(
             authService.getCurrentUser().uid, widget.documentId, widget.book);
         return 'done';
       } catch (e) {

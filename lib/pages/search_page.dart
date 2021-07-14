@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:books_log/models/book.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/pages/fetch_details_page.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,10 @@ import 'package:http/http.dart' as http;
 
 class SearchPage extends StatefulWidget {
   final List<String> myBookTitles;
-  SearchPage({Key? key, required this.myBookTitles}) : super(key: key);
+  final List<String> myBookAuthors;
+  SearchPage(
+      {Key? key, required this.myBookTitles, required this.myBookAuthors})
+      : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -134,8 +138,12 @@ class _SearchPageState extends State<SearchPage> {
                     Route route = MaterialPageRoute(
                       builder: (_) => FetchDetailsPage(
                         openLibrarySearchDoc: results.docs[index],
-                        alreadyLogged: widget.myBookTitles
-                            .contains(results.docs[index].title),
+                        alreadyLogged: widget.myBookTitles.contains(
+                                results.docs[index].title.toLowerCase()) &&
+                            widget.myBookAuthors.contains(results
+                                .docs[index].authorName.first
+                                .toString()
+                                .toLowerCase()),
                       ),
                     );
                     Navigator.push(context, route);
