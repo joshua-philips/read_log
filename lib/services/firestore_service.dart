@@ -30,12 +30,13 @@ class FirestoreService {
         .delete();
   }
 
-  Future<void> updateBook(String uid, String documentId, Book book) async {
+  Future<void> updateBookReview(
+      String uid, String documentId, String review) async {
     await _firestore
         .collection('user')
         .doc('uid')
         .collection('books')
         .doc(documentId)
-        .update({'review': book.review});
+        .update({'review': review});
   }
 }

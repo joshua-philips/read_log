@@ -26,17 +26,13 @@ class AuthTextFormField extends StatelessWidget {
           size: 20,
         ),
         hintText: hintText,
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.green,
-            width: 2,
-          ),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.2),
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(5),
         ),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.grey,
-          ),
-        ),
+        contentPadding: EdgeInsets.all(8),
       ),
       obscureText: obscureText,
       validator: validator,

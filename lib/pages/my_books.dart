@@ -21,7 +21,9 @@ class _MyBooksState extends State<MyBooks> {
   TextEditingController searchController = TextEditingController();
   List<String> myBooksTitles = [];
   List<String> myBooksAuthors = [];
-  bool grid = false;
+  bool grid = true;
+  // TODO: Add sharedprerences to initialise and save grid setting
+
   @override
   Widget build(BuildContext context) {
     final User user = context.read<AuthService>().getCurrentUser();
@@ -56,9 +58,17 @@ class _MyBooksState extends State<MyBooks> {
                       : Container(),
                 ),
                 IconButton(
-                  icon: Icon(Icons.logout),
+                  icon: Icon(grid ? Icons.list_rounded : Icons.grid_on_rounded),
                   onPressed: () {
-                    context.read<AuthService>().signOut();
+                    setState(() {
+                      grid = !grid;
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.logout),
+                  onPressed: () async {
+                    await context.read<AuthService>().signOut();
                     Navigator.popUntil(
                         context, (route) => !Navigator.canPop(context));
                   },

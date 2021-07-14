@@ -3,6 +3,7 @@ import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/components/list_section.dart';
 import 'package:books_log/models/book.dart';
+import 'package:books_log/pages/my_books.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/firestore_service.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -208,8 +209,12 @@ class _BookDetailsState extends State<BookDetails> {
                     showMessageDialog(context, 'Error adding book',
                         'Could not add to my books. Please try again');
                   } else {
-                    showMessageSnackBar(context, 'Added to your books');
-                    Navigator.pop(context);
+                    showMessageSnackBar(
+                        context, widget.book.title + ' added to your books');
+                    Navigator.popUntil(
+                        context, (route) => !Navigator.canPop(context));
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => MyBooks()));
                   }
                 } else if (!widget.newBook) {
                   String returnedString = await updateBook(context);
@@ -217,7 +222,8 @@ class _BookDetailsState extends State<BookDetails> {
                     showMessageDialog(context, 'Error updating book',
                         'Could not update book. Please try again');
                   } else {
-                    showMessageSnackBar(context, 'Updated your books');
+                    showMessageSnackBar(
+                        context, 'Updated ' + widget.book.title);
                     Navigator.pop(context);
                   }
                 }
@@ -237,8 +243,11 @@ class _BookDetailsState extends State<BookDetails> {
                         showMessageDialog(context, 'Error',
                             'Could not remove from my books. Please try again');
                       } else {
-                        showMessageSnackBar(context, 'Removed from your books');
+                        showMessageSnackBar(context,
+                            widget.book.title + ' removed from your books');
                         Navigator.pop(context);
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => MyBooks()));
                       }
                     },
                   ),
@@ -301,22 +310,18 @@ class _BookDetailsState extends State<BookDetails> {
     }
   }
 
+  // TODO: Cant update Review in firestore
   Future<String> updateBook(BuildContext context) async {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
-    if (reviewController.text != widget.book.review) {
-      setState(() {
-        widget.book.updateReview(reviewController.text);
-      });
-      try {
-        firestoreService.updateBook(
-            authService.getCurrentUser().uid, widget.documentId, widget.book);
-        return 'done';
-      } catch (e) {
-        return e.toString();
-      }
-    } else {
+
+    try {
+      widget.book.updateReview(reviewController.text);
+      firestoreService.updateBookReview(authService.getCurrentUser().uid,
+          widget.documentId, reviewController.text);
       return 'done';
+    } catch (e) {
+      return e.toString();
     }
   }
 

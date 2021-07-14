@@ -74,6 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         backgroundImage: photoSet ? FileImage(imageFile) : null,
                       ),
                     ),
+                    SizedBox(height: 10),
                     AuthTextFormField(
                       controller: nameController,
                       hintText: 'Name',
@@ -83,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           : null,
                       obscureText: false,
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 10),
                     AuthTextFormField(
                       controller: emailController,
                       hintText: 'Email Address',
@@ -94,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               : null,
                       obscureText: false,
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 10),
                     AuthTextFormField(
                       controller: passwordController,
                       hintText: 'Password',
@@ -103,7 +104,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           val!.length < 6 ? 'Invalid Password' : null,
                       obscureText: true,
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     AuthTextFormField(
                       controller: cPasswordController,
                       hintText: 'Confirm Password',
