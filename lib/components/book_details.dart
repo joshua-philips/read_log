@@ -9,7 +9,7 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class BookDetails extends StatelessWidget {
+class BookDetails extends StatefulWidget {
   final Book book;
   final bool newBook;
   final String documentId;
@@ -20,7 +20,18 @@ class BookDetails extends StatelessWidget {
       required this.documentId})
       : super(key: key);
 
-  final TextEditingController reviewController = TextEditingController();
+  @override
+  _BookDetailsState createState() => _BookDetailsState();
+}
+
+class _BookDetailsState extends State<BookDetails> {
+  late TextEditingController reviewController;
+
+  @override
+  void initState() {
+    super.initState();
+    reviewController = TextEditingController(text: widget.book.review);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +52,7 @@ class BookDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        book.title,
+                        widget.book.title,
                         style: TextStyle(
                             fontSize: 25, fontWeight: FontWeight.w600),
                       ),
@@ -53,12 +64,12 @@ class BookDetails extends StatelessWidget {
                       writersColumn(),
                       SizedBox(height: 10),
                       Text(
-                        book.firstPublishYear.toString(),
+                        widget.book.firstPublishYear.toString(),
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
                       ),
                       Text(
-                        book.publisher.isNotEmpty
-                            ? book.publisher.first.toUpperCase()
+                        widget.book.publisher.isNotEmpty
+                            ? widget.book.publisher.first.toUpperCase()
                             : '',
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
                       ),
@@ -66,13 +77,13 @@ class BookDetails extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10),
-                BookImageToDialog(book: book),
+                BookImageToDialog(book: widget.book),
               ],
             ),
           ),
           SizedBox(height: 20),
-          book.summary.isNotEmpty ? Divider() : Container(),
-          book.summary.isNotEmpty
+          widget.book.summary.isNotEmpty ? Divider() : Container(),
+          widget.book.summary.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: Column(
@@ -84,7 +95,7 @@ class BookDetails extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       ExpandableText(
-                        book.summary,
+                        widget.book.summary,
                         expandText: 'Read more',
                         collapseText: 'Show less',
                         maxLines: 5,
@@ -94,53 +105,53 @@ class BookDetails extends StatelessWidget {
                   ),
                 )
               : Container(),
-          book.subject.isNotEmpty ? Divider() : Container(),
-          book.subject.isNotEmpty
+          widget.book.subject.isNotEmpty ? Divider() : Container(),
+          widget.book.subject.isNotEmpty
               ? ListSection(
                   sectionTitle: 'SUBJECTS',
-                  children: horizontalDetailList(book.subject),
+                  children: horizontalDetailList(widget.book.subject),
                 )
               : Container(),
-          book.place.isNotEmpty ? Divider() : Container(),
-          book.place.isNotEmpty
+          widget.book.place.isNotEmpty ? Divider() : Container(),
+          widget.book.place.isNotEmpty
               ? ListSection(
                   sectionTitle: 'PLACES',
-                  children: horizontalDetailList(book.place),
+                  children: horizontalDetailList(widget.book.place),
                 )
               : Container(),
-          book.time.isNotEmpty ? Divider() : Container(),
-          book.time.isNotEmpty
+          widget.book.time.isNotEmpty ? Divider() : Container(),
+          widget.book.time.isNotEmpty
               ? ListSection(
                   sectionTitle: 'TIME',
-                  children: horizontalDetailList(book.time),
+                  children: horizontalDetailList(widget.book.time),
                 )
               : Container(),
-          book.person.isNotEmpty ? Divider() : Container(),
-          book.person.isNotEmpty
+          widget.book.person.isNotEmpty ? Divider() : Container(),
+          widget.book.person.isNotEmpty
               ? ListSection(
                   sectionTitle: 'CHARACTERS',
-                  children: horizontalDetailList(book.person),
+                  children: horizontalDetailList(widget.book.person),
                 )
               : Container(),
-          book.publisher.isNotEmpty ? Divider() : Container(),
-          book.publisher.isNotEmpty
+          widget.book.publisher.isNotEmpty ? Divider() : Container(),
+          widget.book.publisher.isNotEmpty
               ? ListSection(
                   sectionTitle: 'PUBLISHERS',
-                  children: horizontalDetailList(book.publisher),
+                  children: horizontalDetailList(widget.book.publisher),
                 )
               : Container(),
-          book.publishYear.isNotEmpty ? Divider() : Container(),
-          book.publishYear.isNotEmpty
+          widget.book.publishYear.isNotEmpty ? Divider() : Container(),
+          widget.book.publishYear.isNotEmpty
               ? ListSection(
                   sectionTitle: 'YEARS PUBLISHED',
-                  children: horizontalDetailListSorted(book.publishYear),
+                  children: horizontalDetailListSorted(widget.book.publishYear),
                 )
               : Container(),
-          book.links.isNotEmpty ? Divider() : Container(),
-          book.links.isNotEmpty
+          widget.book.links.isNotEmpty ? Divider() : Container(),
+          widget.book.links.isNotEmpty
               ? ListSection(
                   sectionTitle: 'EXTERNAL LINKS',
-                  children: listOfLinks(book.links, context),
+                  children: listOfLinks(widget.book.links, context),
                 )
               : Container(),
           Divider(),
@@ -183,9 +194,9 @@ class BookDetails extends StatelessWidget {
             padding: const EdgeInsets.only(left: 12.0, right: 12),
             child: MaterialButton(
               color: Colors.green,
-              child: Text(newBook ? 'Add to your books' : 'Update'),
+              child: Text(widget.newBook ? 'Add to your books' : 'Update'),
               onPressed: () async {
-                if (newBook) {
+                if (widget.newBook) {
                   String returnedString = await addToBooks(context);
                   if (returnedString != 'done') {
                     showMessageDialog(context, 'Error adding book',
@@ -194,12 +205,21 @@ class BookDetails extends StatelessWidget {
                     showMessageSnackBar(context, 'Added to your books');
                     Navigator.pop(context);
                   }
+                } else {
+                  String returnedString = await updateBook(context);
+                  if (returnedString != 'done') {
+                    showMessageDialog(context, 'Error updating book',
+                        'Could not update book. Please try again');
+                  } else {
+                    showMessageSnackBar(context, 'Updated your books');
+                    Navigator.pop(context);
+                  }
                 }
               },
             ),
           ),
           SizedBox(height: 10),
-          !newBook
+          !widget.newBook
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
@@ -227,11 +247,11 @@ class BookDetails extends StatelessWidget {
   Column writersColumn() {
     List<Widget> writers = [];
 
-    if (book.author.isNotEmpty) {
-      for (int count = 0; count < book.author.length; count++) {
+    if (widget.book.author.isNotEmpty) {
+      for (int count = 0; count < widget.book.author.length; count++) {
         writers.add(
           Text(
-            book.author[count],
+            widget.book.author[count],
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -261,12 +281,13 @@ class BookDetails extends StatelessWidget {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
     if (reviewController.text.isNotEmpty) {
-      book.updateReview(reviewController.text);
+      widget.book.updateReview(reviewController.text);
     }
-    book.setDateAdded(DateTime.now());
+    widget.book.setDateAdded(DateTime.now());
 
     try {
-      firestoreService.uploadBook(book, authService.getCurrentUser().uid);
+      firestoreService.uploadBook(
+          widget.book, authService.getCurrentUser().uid);
       return 'done';
     } catch (e) {
       print(e);
@@ -274,9 +295,23 @@ class BookDetails extends StatelessWidget {
     }
   }
 
-  Future<String> updateBook() async {
-    // TODO: Update book
-    return 'done';
+  Future<String> updateBook(BuildContext context) async {
+    AuthService authService = context.read<AuthService>();
+    FirestoreService firestoreService = context.read<FirestoreService>();
+    if (reviewController.text != widget.book.review) {
+      setState(() {
+        widget.book.updateReview(reviewController.text);
+      });
+      try {
+        await firestoreService.updateBook(
+            authService.getCurrentUser().uid, widget.documentId, widget.book);
+        return 'done';
+      } catch (e) {
+        return e.toString();
+      }
+    } else {
+      return 'done';
+    }
   }
 
   Future<String> removeBook(BuildContext context) async {
@@ -284,7 +319,7 @@ class BookDetails extends StatelessWidget {
     FirestoreService firestoreService = context.read<FirestoreService>();
     try {
       await firestoreService.removeFromMyBooks(
-          authService.getCurrentUser().uid, documentId);
+          authService.getCurrentUser().uid, widget.documentId);
       return 'done';
     } catch (e) {
       return e.toString();
