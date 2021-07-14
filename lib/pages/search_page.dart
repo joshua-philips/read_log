@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:books_log/models/book.dart';
+import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/pages/fetch_details_page.dart';
 import 'package:flutter/material.dart';
@@ -121,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
                         style: TextStyle(fontSize: 25),
                       ),
                       subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                        padding: const EdgeInsets.only(top: 5),
                         child: SizedBox(
                           height: 25,
                           child: ListView(
@@ -158,36 +158,5 @@ class _SearchPageState extends State<SearchPage> {
     } else {
       return Container();
     }
-  }
-
-  List<Widget> writersRow(List<dynamic> authorName) {
-    List<Widget> writers = [];
-
-    if (authorName.isNotEmpty) {
-      for (int count = 0; count < authorName.length; count++) {
-        writers.add(
-          Text(
-            authorName[count],
-            style: TextStyle(fontSize: 20),
-          ),
-        );
-        if (count != authorName.length - 1) {
-          writers.add(
-            Text(
-              '/ ',
-              style: TextStyle(fontSize: 20),
-            ),
-          );
-        }
-      }
-    } else {
-      writers.add(
-        Text(
-          'Unknown',
-          style: TextStyle(fontSize: 20),
-        ),
-      );
-    }
-    return writers;
   }
 }

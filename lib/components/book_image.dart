@@ -124,8 +124,8 @@ class BookImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
-      width: 100,
+      height: 100,
+      width: 70,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(2),
         border: Border.all(

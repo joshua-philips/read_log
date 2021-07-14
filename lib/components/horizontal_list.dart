@@ -72,3 +72,40 @@ List<Widget> listOfLinks(List<Links> list, BuildContext context) {
   }
   return widgetList;
 }
+
+List<Widget> writersRow(List<dynamic> authorName) {
+  List<Widget> writers = [];
+
+  if (authorName.isNotEmpty) {
+    for (int count = 0; count < authorName.length; count++) {
+      writers.add(
+        Text(
+          authorName[count],
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+      );
+      if (count != authorName.length - 1) {
+        writers.add(
+          Text(
+            '/',
+            style: TextStyle(
+              fontSize: 19,
+              color: Colors.white.withOpacity(0.7),
+            ),
+          ),
+        );
+      }
+    }
+  } else {
+    writers.add(
+      Text(
+        'Unknown',
+        style: TextStyle(fontSize: 20),
+      ),
+    );
+  }
+  return writers;
+}

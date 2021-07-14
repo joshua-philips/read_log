@@ -324,7 +324,7 @@ class _BookDetailsState extends State<BookDetails> {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
     try {
-      await firestoreService.removeFromMyBooks(
+      firestoreService.removeFromMyBooks(
           authService.getCurrentUser().uid, widget.documentId);
       return 'done';
     } catch (e) {
