@@ -102,28 +102,45 @@ class _MyBooksState extends State<MyBooks> {
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasError) {
-                        return Text('Something went wrong');
+                        return Container(
+                          height: MediaQuery.of(context).size.height / 1.5,
+                          child:
+                              Center(child: Text('Oops! Something went wrong')),
+                        );
                       }
 
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Text("Loading...");
+                        return Container(
+                          height: MediaQuery.of(context).size.height / 1.5,
+                          child: Center(child: Text("Loading...")),
+                        );
                       }
 
-                      return GridView.count(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                        childAspectRatio: 0.65,
-                        children: snapshot.data!.docs
-                            .map((DocumentSnapshot document) {
-                          Map<String, dynamic> data =
-                              document.data() as Map<String, dynamic>;
-                          Book book = Book.fromJson(data);
-                          return BookImage(book: book);
-                        }).toList(),
-                      );
+                      if (snapshot.hasData) {
+                        return GridView.count(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          childAspectRatio: 0.65,
+                          children: snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                                document.data() as Map<String, dynamic>;
+                            Book book = Book.fromJson(data);
+                            return MyBooksImage(
+                              book: book,
+                              documentId: document.id,
+                            );
+                          }).toList(),
+                        );
+                      } else {
+                        return Container(
+                          height: MediaQuery.of(context).size.height / 1.5,
+                          child: Center(child: Text('No books added')),
+                        );
+                      }
                     },
                   ),
                 ),

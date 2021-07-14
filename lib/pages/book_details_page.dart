@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 
 class BookDetailsPage extends StatefulWidget {
   final Book book;
-  const BookDetailsPage({Key? key, required this.book}) : super(key: key);
+  final String documentId;
+  const BookDetailsPage(
+      {Key? key, required this.book, required this.documentId})
+      : super(key: key);
 
   @override
   _BookDetailsPageState createState() => _BookDetailsPageState();
@@ -18,7 +21,11 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         title: Text(widget.book.title),
         backgroundColor: Colors.transparent,
       ),
-      body: BookDetails(book: widget.book, newBook: false),
+      body: BookDetails(
+        book: widget.book,
+        newBook: false,
+        documentId: widget.documentId,
+      ),
     );
   }
 }

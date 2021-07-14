@@ -1,6 +1,6 @@
+import 'package:books_log/components/book_image.dart';
 import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/components/horizontal_list.dart';
-import 'package:books_log/components/image_dialog.dart';
 import 'package:books_log/components/list_section.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -12,7 +12,12 @@ import 'package:provider/provider.dart';
 class BookDetails extends StatelessWidget {
   final Book book;
   final bool newBook;
-  BookDetails({Key? key, required this.book, required this.newBook})
+  final String documentId;
+  BookDetails(
+      {Key? key,
+      required this.book,
+      required this.newBook,
+      required this.documentId})
       : super(key: key);
 
   final TextEditingController reviewController = TextEditingController();
@@ -61,54 +66,7 @@ class BookDetails extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10),
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => buildImageDialog(
-                        context,
-                        book.coverImage,
-                        book.title,
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 150,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      border: Border.all(
-                        color: Colors.white70,
-                      ),
-                      color: Colors.black54,
-                    ),
-                    child: Image.network(
-                      book.coverImage,
-                      fit: BoxFit.fill,
-                      errorBuilder: (context, error, stackTrace) => Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Text(
-                            book.title,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      loadingBuilder: (context, child, loadingProgress) =>
-                          loadingProgress == null
-                              ? child
-                              : Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: Text(
-                                      book.title,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                    ),
-                  ),
-                ),
+                BookImageToDialog(book: book),
               ],
             ),
           ),
@@ -240,6 +198,26 @@ class BookDetails extends StatelessWidget {
               },
             ),
           ),
+          SizedBox(height: 10),
+          !newBook
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  child: MaterialButton(
+                    color: Colors.red,
+                    child: Text('Remove from your books'),
+                    onPressed: () async {
+                      String returnedString = await removeBook(context);
+                      if (returnedString != 'done') {
+                        showMessageDialog(context, 'Error',
+                            'Could not remove from my books. Please try again');
+                      } else {
+                        showMessageSnackBar(context, 'Removed from your books');
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                )
+              : Container(),
           SizedBox(height: 20),
         ],
       ),
@@ -299,5 +277,17 @@ class BookDetails extends StatelessWidget {
   Future<String> updateBook() async {
     // TODO: Update book
     return 'done';
+  }
+
+  Future<String> removeBook(BuildContext context) async {
+    AuthService authService = context.read<AuthService>();
+    FirestoreService firestoreService = context.read<FirestoreService>();
+    try {
+      await firestoreService.removeFromMyBooks(
+          authService.getCurrentUser().uid, documentId);
+      return 'done';
+    } catch (e) {
+      return e.toString();
+    }
   }
 }

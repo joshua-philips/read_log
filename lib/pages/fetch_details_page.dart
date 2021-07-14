@@ -119,6 +119,7 @@ class _FetchDetailsPageState extends State<FetchDetailsPage> {
       return BookDetails(
         book: newBook,
         newBook: true,
+        documentId: '',
       );
     } else if (fetchOngoing == false && error) {
       worksResult = OpenLibraryWorks.noValues();
@@ -142,6 +143,7 @@ class _FetchDetailsPageState extends State<FetchDetailsPage> {
       return BookDetails(
         book: newBook,
         newBook: true,
+        documentId: '',
       );
     } else {
       return Container();

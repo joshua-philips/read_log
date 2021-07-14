@@ -17,7 +17,25 @@ class FirestoreService {
         .collection('user')
         .doc(uid)
         .collection('books')
-        .orderBy('dateAdded')
+        .orderBy('dateAdded', descending: true)
         .snapshots();
+  }
+
+  Future<void> removeFromMyBooks(String uid, String documentId) async {
+    await _firestore
+        .collection('user')
+        .doc(uid)
+        .collection('books')
+        .doc(documentId)
+        .delete();
+  }
+
+  Future<void> updateBook(String uid, String documentId, Book book) async {
+    await _firestore
+        .collection('user')
+        .doc('uid')
+        .collection('books')
+        .doc(documentId)
+        .update({'review': book.review});
   }
 }
