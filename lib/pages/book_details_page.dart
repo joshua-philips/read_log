@@ -25,6 +25,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         book: widget.book,
         newBook: false,
         documentId: widget.documentId,
+        alreadyLogged: true,
       ),
     );
   }

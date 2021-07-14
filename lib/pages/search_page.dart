@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  final List<String> myBookTitles;
+  SearchPage({Key? key, required this.myBookTitles}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -133,6 +134,8 @@ class _SearchPageState extends State<SearchPage> {
                     Route route = MaterialPageRoute(
                       builder: (_) => FetchDetailsPage(
                         openLibrarySearchDoc: results.docs[index],
+                        alreadyLogged: widget.myBookTitles
+                            .contains(results.docs[index].title),
                       ),
                     );
                     Navigator.push(context, route);

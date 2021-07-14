@@ -13,11 +13,13 @@ class BookDetails extends StatefulWidget {
   final Book book;
   final bool newBook;
   final String documentId;
+  final bool alreadyLogged;
   BookDetails(
       {Key? key,
       required this.book,
       required this.newBook,
-      required this.documentId})
+      required this.documentId,
+      required this.alreadyLogged})
       : super(key: key);
 
   @override
@@ -194,9 +196,13 @@ class _BookDetailsState extends State<BookDetails> {
             padding: const EdgeInsets.only(left: 12.0, right: 12),
             child: MaterialButton(
               color: Colors.green,
-              child: Text(widget.newBook ? 'Add to your books' : 'Update'),
+              child: Text(widget.newBook
+                  ? widget.alreadyLogged
+                      ? 'Already Logged'
+                      : 'Add to your books'
+                  : 'Update'),
               onPressed: () async {
-                if (widget.newBook) {
+                if (widget.newBook && !widget.alreadyLogged) {
                   String returnedString = await addToBooks(context);
                   if (returnedString != 'done') {
                     showMessageDialog(context, 'Error adding book',
@@ -205,7 +211,7 @@ class _BookDetailsState extends State<BookDetails> {
                     showMessageSnackBar(context, 'Added to your books');
                     Navigator.pop(context);
                   }
-                } else {
+                } else if (!widget.newBook) {
                   String returnedString = await updateBook(context);
                   if (returnedString != 'done') {
                     showMessageDialog(context, 'Error updating book',

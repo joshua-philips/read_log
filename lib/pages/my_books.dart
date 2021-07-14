@@ -17,6 +17,7 @@ class MyBooks extends StatefulWidget {
 
 class _MyBooksState extends State<MyBooks> {
   TextEditingController searchController = TextEditingController();
+  List<String> myBookTitles = [];
   @override
   Widget build(BuildContext context) {
     final User user = context.read<AuthService>().getCurrentUser();
@@ -129,6 +130,7 @@ class _MyBooksState extends State<MyBooks> {
                             Map<String, dynamic> data =
                                 document.data() as Map<String, dynamic>;
                             Book book = Book.fromJson(data);
+                            myBookTitles.add(book.title);
                             return MyBooksImage(
                               book: book,
                               documentId: document.id,
@@ -154,7 +156,8 @@ class _MyBooksState extends State<MyBooks> {
         mini: true,
         child: Icon(Icons.add, color: Colors.white.withOpacity(0.7)),
         onPressed: () {
-          Route route = MaterialPageRoute(builder: (context) => SearchPage());
+          Route route = MaterialPageRoute(
+              builder: (context) => SearchPage(myBookTitles: myBookTitles));
           Navigator.push(context, route);
         },
       ),
