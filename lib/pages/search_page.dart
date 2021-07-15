@@ -1,17 +1,15 @@
 import 'dart:convert';
 
 import 'package:books_log/components/horizontal_list.dart';
+import 'package:books_log/models/my_books.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/pages/fetch_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
-  final List<String> myBookTitles;
-  final List<String> myBookAuthors;
-  SearchPage(
-      {Key? key, required this.myBookTitles, required this.myBookAuthors})
-      : super(key: key);
+  SearchPage({Key? key}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -134,16 +132,14 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
                   ),
-                  onTap: () {
+                  onTap: () async {
+                    bool isLogged = context.read<MyBooks>().isInMyBooks(
+                        results.docs[index].title,
+                        results.docs[index].authorName.first.toString());
                     Route route = MaterialPageRoute(
                       builder: (_) => FetchDetailsPage(
                         openLibrarySearchDoc: results.docs[index],
-                        alreadyLogged: widget.myBookTitles.contains(
-                                results.docs[index].title.toLowerCase()) &&
-                            widget.myBookAuthors.contains(results
-                                .docs[index].authorName.first
-                                .toString()
-                                .toLowerCase()),
+                        alreadyLogged: isLogged,
                       ),
                     );
                     Navigator.push(context, route);

@@ -1,5 +1,6 @@
+import 'package:books_log/models/my_books.dart';
 import 'package:books_log/pages/authentication_pages/login_page.dart';
-import 'package:books_log/pages/my_books.dart';
+import 'package:books_log/pages/my_books_page.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/firestore_service.dart';
 import 'package:books_log/services/storage_service.dart';
@@ -61,6 +62,8 @@ class _MyAppState extends State<MyApp> {
         Provider<AuthService>(create: (_) => AuthService()),
         Provider<FirestoreService>(create: (_) => FirestoreService()),
         Provider<StorageService>(create: (_) => StorageService()),
+        Provider<MyBooks>(
+            create: (_) => MyBooks(myBooksTitles: [], myBooksAuthors: [])),
       ],
       builder: (context, child) => MaterialApp(
         title: 'Book Log',
@@ -90,14 +93,14 @@ class HomeController extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.hasData) {
-            return MyBooks();
+            return MyBooksPage();
           } else {
             return LoginPage();
           }
         }
         return Scaffold(
           body: Center(
-            child: CircularProgressIndicator(),
+            child: Text('Loading...'),
           ),
         );
       },

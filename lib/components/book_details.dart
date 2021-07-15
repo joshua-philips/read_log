@@ -3,7 +3,7 @@ import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/components/list_section.dart';
 import 'package:books_log/models/book.dart';
-import 'package:books_log/pages/my_books.dart';
+import 'package:books_log/models/my_books.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/firestore_service.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -211,10 +211,7 @@ class _BookDetailsState extends State<BookDetails> {
                   } else {
                     showMessageSnackBar(
                         context, widget.book.title + ' added to your books');
-                    Navigator.popUntil(
-                        context, (route) => !Navigator.canPop(context));
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => MyBooks()));
+                    Navigator.pop(context);
                   }
                 } else if (!widget.newBook) {
                   String returnedString = await updateBook(context);
@@ -243,11 +240,11 @@ class _BookDetailsState extends State<BookDetails> {
                         showMessageDialog(context, 'Error',
                             'Could not remove from my books. Please try again');
                       } else {
+                        context.read<MyBooks>().removeFromMyBooks(
+                            widget.book.title, widget.book.author.first);
                         showMessageSnackBar(context,
                             widget.book.title + ' removed from your books');
                         Navigator.pop(context);
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => MyBooks()));
                       }
                     },
                   ),

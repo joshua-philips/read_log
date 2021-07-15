@@ -96,7 +96,7 @@ class LoginPage extends StatelessWidget {
                               : null,
                       obscureText: false,
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 15),
                     AuthTextFormField(
                       controller: passwordController,
                       hintText: 'Password',
@@ -105,7 +105,7 @@ class LoginPage extends StatelessWidget {
                           val!.isEmpty ? 'Enter password' : null,
                       obscureText: true,
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -130,7 +130,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 15),
             TextButton(
               style: TextButton.styleFrom(
                 shape: new RoundedRectangleBorder(
@@ -163,7 +163,7 @@ class LoginPage extends StatelessWidget {
                 }
               },
             ),
-            SizedBox(height: 50),
+            SizedBox(height: 70),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

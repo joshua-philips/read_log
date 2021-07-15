@@ -1,6 +1,7 @@
 import 'package:books_log/components/book_image.dart';
 import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/models/book.dart';
+import 'package:books_log/models/my_books.dart';
 import 'package:books_log/pages/book_details_page.dart';
 import 'package:books_log/pages/search_page.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -10,17 +11,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MyBooks extends StatefulWidget {
-  const MyBooks({Key? key}) : super(key: key);
+class MyBooksPage extends StatefulWidget {
+  const MyBooksPage({Key? key}) : super(key: key);
 
   @override
-  _MyBooksState createState() => _MyBooksState();
+  _MyBooksPageState createState() => _MyBooksPageState();
 }
 
-class _MyBooksState extends State<MyBooks> {
+class _MyBooksPageState extends State<MyBooksPage> {
   TextEditingController searchController = TextEditingController();
-  List<String> myBooksTitles = [];
-  List<String> myBooksAuthors = [];
   bool grid = true;
   // TODO: Add sharedprerences to initialise and save grid setting
 
@@ -138,12 +137,15 @@ class _MyBooksState extends State<MyBooks> {
                         }
 
                         if (snapshot.hasData) {
-                          return body(snapshot);
+                          return snapshot.data!.docs.length > 0
+                              ? body(snapshot, context)
+                              : Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 1.5,
+                                  child: Center(child: Text('No books added')),
+                                );
                         } else {
-                          return Container(
-                            height: MediaQuery.of(context).size.height / 1.5,
-                            child: Center(child: Text('No books added')),
-                          );
+                          return Container();
                         }
                       },
                     ),
@@ -159,18 +161,15 @@ class _MyBooksState extends State<MyBooks> {
         mini: true,
         child: Icon(Icons.add, color: Colors.white.withOpacity(0.7)),
         onPressed: () {
-          Route route = MaterialPageRoute(
-              builder: (context) => SearchPage(
-                    myBookAuthors: myBooksAuthors,
-                    myBookTitles: myBooksTitles,
-                  ));
+          Route route = MaterialPageRoute(builder: (context) => SearchPage());
           Navigator.push(context, route);
         },
       ),
     );
   }
 
-  Widget body(AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
+  Widget body(
+      AsyncSnapshot<QuerySnapshot<Object?>> snapshot, BuildContext context) {
     if (grid) {
       return GridView.count(
         shrinkWrap: true,
@@ -182,8 +181,7 @@ class _MyBooksState extends State<MyBooks> {
         children: snapshot.data!.docs.map((DocumentSnapshot document) {
           Map<String, dynamic> data = document.data() as Map<String, dynamic>;
           Book book = Book.fromJson(data);
-          myBooksTitles.add(book.title.toLowerCase());
-          myBooksAuthors.add(book.author.first.toLowerCase());
+          context.read<MyBooks>().addToMyBooks(book.title, book.author.first);
           return MyBooksImage(
             book: book,
             documentId: document.id,
@@ -197,8 +195,7 @@ class _MyBooksState extends State<MyBooks> {
         children: snapshot.data!.docs.map((DocumentSnapshot document) {
           Map<String, dynamic> data = document.data() as Map<String, dynamic>;
           Book book = Book.fromJson(data);
-          myBooksTitles.add(book.title.toLowerCase());
-          myBooksAuthors.add(book.author.first.toLowerCase());
+          context.read<MyBooks>().addToMyBooks(book.title, book.author.first);
           return Card(
             margin: EdgeInsets.only(bottom: 8),
             child: InkWell(
