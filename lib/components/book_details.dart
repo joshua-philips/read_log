@@ -2,6 +2,7 @@ import 'package:books_log/components/book_image.dart';
 import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/components/list_section.dart';
+import 'package:books_log/constants.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_books.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -205,7 +206,7 @@ class _BookDetailsState extends State<BookDetails> {
               onPressed: () async {
                 if (widget.newBook && !widget.alreadyLogged) {
                   String returnedString = await addToBooks(context);
-                  if (returnedString != 'done') {
+                  if (returnedString != done) {
                     showMessageDialog(context, 'Error adding book',
                         'Could not add to my books. Please try again');
                   } else {
@@ -215,7 +216,7 @@ class _BookDetailsState extends State<BookDetails> {
                   }
                 } else if (!widget.newBook) {
                   String returnedString = await updateBook(context);
-                  if (returnedString != 'done') {
+                  if (returnedString != done) {
                     showMessageDialog(context, 'Error updating book',
                         'Could not update book. Please try again');
                   } else {
@@ -236,7 +237,7 @@ class _BookDetailsState extends State<BookDetails> {
                     child: Text('Remove from your books'),
                     onPressed: () async {
                       String returnedString = await removeBook(context);
-                      if (returnedString != 'done') {
+                      if (returnedString != done) {
                         showMessageDialog(context, 'Error',
                             'Could not remove from my books. Please try again');
                       } else {
@@ -300,7 +301,7 @@ class _BookDetailsState extends State<BookDetails> {
     try {
       firestoreService.uploadBook(
           widget.book, authService.getCurrentUser().uid);
-      return 'done';
+      return done;
     } catch (e) {
       print(e);
       return e.toString();
@@ -316,7 +317,7 @@ class _BookDetailsState extends State<BookDetails> {
       widget.book.updateReview(reviewController.text);
       firestoreService.updateBookReview(authService.getCurrentUser().uid,
           widget.documentId, reviewController.text);
-      return 'done';
+      return done;
     } catch (e) {
       return e.toString();
     }
@@ -328,7 +329,7 @@ class _BookDetailsState extends State<BookDetails> {
     try {
       firestoreService.removeFromMyBooks(
           authService.getCurrentUser().uid, widget.documentId);
-      return 'done';
+      return done;
     } catch (e) {
       return e.toString();
     }

@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:books_log/components/auth_text_formfield.dart';
 import 'package:books_log/components/dialogs_and_snackbar.dart';
+import 'package:books_log/constants.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/storage_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +86,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           : null,
                       obscureText: false,
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
                     AuthTextFormField(
                       controller: emailController,
                       hintText: 'Email Address',
@@ -95,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               : null,
                       obscureText: false,
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
                     AuthTextFormField(
                       controller: passwordController,
                       hintText: 'Password',
@@ -104,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           val!.length < 6 ? 'Invalid Password' : null,
                       obscureText: true,
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
                     AuthTextFormField(
                       controller: cPasswordController,
                       hintText: 'Confirm Password',
@@ -131,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 if (formKey.currentState!.validate() && photoSet) {
                   showLoadingDialog(context);
                   String returnedString = await register(context);
-                  if (returnedString != 'done') {
+                  if (returnedString != done) {
                     Navigator.pop(context);
                     showMessageDialog(context, 'Error', returnedString);
                   } else {
@@ -194,7 +196,9 @@ class _RegisterPageState extends State<RegisterPage> {
           .uploadProfilePhoto(imageFile, emailController.text)
           .whenComplete(() => print('upload complete'));
       await context.read<AuthService>().setProfilePhoto(photoUrl);
-      return 'done';
+      return done;
+    } on FirebaseAuthException catch (e) {
+      return e.message!;
     } on Exception catch (e) {
       print(e);
       return e.toString();

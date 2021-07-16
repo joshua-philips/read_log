@@ -30,31 +30,33 @@ class MyBooksImage extends StatelessWidget {
           ),
           color: Colors.black54,
         ),
-        child: Image.network(
-          book.coverImage,
-          fit: BoxFit.fill,
-          errorBuilder: (context, error, stackTrace) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Text(
-                book.title,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          loadingBuilder: (context, child, loadingProgress) =>
-              loadingProgress == null
-                  ? child
-                  : Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Text(
-                          book.title,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+        child: Image.network(book.coverImage,
+            fit: BoxFit.fill,
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
+                child,
+            errorBuilder: (context, error, stackTrace) => Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Text(
+                      book.title,
+                      textAlign: TextAlign.center,
                     ),
-        ),
+                  ),
+                ),
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    book.title,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            }),
       ),
     );
   }
@@ -87,31 +89,33 @@ class BookImageToDialog extends StatelessWidget {
           ),
           color: Colors.black54,
         ),
-        child: Image.network(
-          book.coverImage,
-          fit: BoxFit.fill,
-          errorBuilder: (context, error, stackTrace) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Text(
-                book.title,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          loadingBuilder: (context, child, loadingProgress) =>
-              loadingProgress == null
-                  ? child
-                  : Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Text(
-                          book.title,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+        child: Image.network(book.coverImage,
+            fit: BoxFit.fill,
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
+                child,
+            errorBuilder: (context, error, stackTrace) => Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Text(
+                      book.title,
+                      textAlign: TextAlign.center,
                     ),
-        ),
+                  ),
+                ),
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    book.title,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            }),
       ),
     );
   }
@@ -124,8 +128,8 @@ class BookImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      width: 70,
+      height: 90,
+      width: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(2),
         border: Border.all(
@@ -133,31 +137,33 @@ class BookImage extends StatelessWidget {
         ),
         color: Colors.black54,
       ),
-      child: Image.network(
-        book.coverImage,
-        fit: BoxFit.fill,
-        errorBuilder: (context, error, stackTrace) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: Text(
-              book.title,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        loadingBuilder: (context, child, loadingProgress) =>
-            loadingProgress == null
-                ? child
-                : Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Text(
-                        book.title,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+      child: Image.network(book.coverImage,
+          fit: BoxFit.fill,
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
+              child,
+          errorBuilder: (context, error, stackTrace) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    book.title,
+                    textAlign: TextAlign.center,
                   ),
-      ),
+                ),
+              ),
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) {
+              return child;
+            }
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Text(
+                  book.title,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }),
     );
   }
 }

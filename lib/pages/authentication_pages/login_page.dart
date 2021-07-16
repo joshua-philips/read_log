@@ -1,8 +1,10 @@
 import 'package:books_log/components/auth_text_formfield.dart';
 import 'package:books_log/components/dialogs_and_snackbar.dart';
+import 'package:books_log/constants.dart';
 import 'package:books_log/pages/authentication_pages/password_reset_page.dart';
 import 'package:books_log/pages/authentication_pages/register_page.dart';
 import 'package:books_log/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -149,14 +151,11 @@ class LoginPage extends StatelessWidget {
               ),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  // showLoadingDialog(context);
                   String returnedString = await login(
                       emailController.text, passwordController.text, context);
-                  if (returnedString != 'done') {
-                    // Navigator.pop(context);
+                  if (returnedString != done) {
                     showMessageDialog(context, 'Login Error', returnedString);
                   } else {
-                    // Navigator.pop(context);
                     Navigator.popUntil(
                         context, (route) => !Navigator.canPop(context));
                   }
@@ -200,10 +199,10 @@ class LoginPage extends StatelessWidget {
       await context
           .read<AuthService>()
           .loginWithEmailAndPassword(email, password);
-      return 'done';
-    } catch (e) {
-      print(e);
-      return e.toString();
+      return done;
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      return e.message!;
     }
   }
 }
