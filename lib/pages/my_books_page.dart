@@ -1,5 +1,6 @@
 import 'package:books_log/components/book_image.dart';
 import 'package:books_log/components/horizontal_list.dart';
+import 'package:books_log/configuration/grid_settings.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_books.dart';
 import 'package:books_log/pages/book_details_page.dart';
@@ -20,8 +21,6 @@ class MyBooksPage extends StatefulWidget {
 
 class _MyBooksPageState extends State<MyBooksPage> {
   TextEditingController searchController = TextEditingController();
-  bool grid = true;
-  // TODO: Add sharedprerences to initialise and save grid setting
 
   @override
   Widget build(BuildContext context) {
@@ -53,15 +52,17 @@ class _MyBooksPageState extends State<MyBooksPage> {
                           width: 50,
                           height: 50,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(),
                         )
                       : Container(),
                 ),
                 IconButton(
-                  icon: Icon(grid ? Icons.list_rounded : Icons.grid_on_rounded),
+                  icon: Icon(context.watch<GridSettings>().grid
+                      ? Icons.list_rounded
+                      : Icons.grid_on_rounded),
                   onPressed: () {
-                    setState(() {
-                      grid = !grid;
-                    });
+                    context.read<GridSettings>().toggleGrid();
                   },
                 ),
                 IconButton(
@@ -170,7 +171,7 @@ class _MyBooksPageState extends State<MyBooksPage> {
 
   Widget body(
       AsyncSnapshot<QuerySnapshot<Object?>> snapshot, BuildContext context) {
-    if (grid) {
+    if (context.watch<GridSettings>().grid) {
       return GridView.count(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
