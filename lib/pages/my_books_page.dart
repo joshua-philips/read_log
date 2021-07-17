@@ -1,5 +1,6 @@
 import 'package:books_log/components/book_image.dart';
 import 'package:books_log/components/horizontal_list.dart';
+import 'package:books_log/components/my_drawer.dart';
 import 'package:books_log/configuration/grid_settings.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_books.dart';
@@ -26,37 +27,44 @@ class _MyBooksPageState extends State<MyBooksPage> {
   Widget build(BuildContext context) {
     final User user = context.read<AuthService>().getCurrentUser();
     return Scaffold(
+      drawer: MyDrawer(),
       body: Scrollbar(
         thickness: 2,
         child: CustomScrollView(
           physics: BouncingScrollPhysics(),
           slivers: [
             SliverAppBar(
-              title: Text(
-                'My Books',
-                style: TextStyle(fontSize: 25),
-              ),
-              elevation: 0,
-              floating: true,
-              backgroundColor: Colors.transparent,
-              actions: [
-                Container(
-                  clipBehavior: Clip.hardEdge,
-                  margin: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: user.photoURL != null
-                      ? Image.network(
-                          user.photoURL!,
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(),
-                        )
-                      : Container(),
+              title: Container(
+                padding: EdgeInsets.only(left: 8, right: 5),
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.white.withOpacity(0.2),
                 ),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    icon: Icon(
+                      Icons.search,
+                      color:
+                          Theme.of(context).iconTheme.color?.withOpacity(0.7),
+                    ),
+                    hintText: 'Search my books',
+                    border: InputBorder.none,
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        searchController.clear();
+                      },
+                      icon: Icon(
+                        Icons.close,
+                        color:
+                            Theme.of(context).iconTheme.color?.withOpacity(0.7),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              actions: [
                 IconButton(
                   icon: Icon(context.watch<GridSettings>().grid
                       ? Icons.list_rounded
@@ -64,55 +72,15 @@ class _MyBooksPageState extends State<MyBooksPage> {
                   onPressed: () {
                     context.read<GridSettings>().toggleGrid();
                   },
-                ),
-                IconButton(
-                  icon: Icon(Icons.logout),
-                  onPressed: () async {
-                    await context.read<AuthService>().signOut();
-                    Navigator.popUntil(
-                        context, (route) => !Navigator.canPop(context));
-                  },
-                ),
+                )
               ],
+              elevation: 0,
+              floating: true,
+              backgroundColor: Colors.transparent,
             ),
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  Container(
-                    padding: EdgeInsets.only(left: 8, right: 5),
-                    margin: EdgeInsets.only(left: 12, right: 12, top: 12),
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white.withOpacity(0.2),
-                    ),
-                    child: TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        icon: Icon(
-                          Icons.search,
-                          color: Theme.of(context)
-                              .iconTheme
-                              .color
-                              ?.withOpacity(0.7),
-                        ),
-                        hintText: 'Search my books',
-                        border: InputBorder.none,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            searchController.clear();
-                          },
-                          icon: Icon(
-                            Icons.close,
-                            color: Theme.of(context)
-                                .iconTheme
-                                .color
-                                ?.withOpacity(0.7),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 12, right: 12),
                     child: StreamBuilder<QuerySnapshot>(

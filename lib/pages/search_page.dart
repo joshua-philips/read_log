@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:books_log/components/horizontal_list.dart';
+import 'package:books_log/components/my_drawer.dart';
 import 'package:books_log/models/my_books.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/pages/fetch_details_page.dart';
@@ -51,6 +52,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MyDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Container(
