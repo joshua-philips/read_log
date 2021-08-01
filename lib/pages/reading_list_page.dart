@@ -24,7 +24,7 @@ class _ReadingListPageState extends State<ReadingListPage> {
   Widget build(BuildContext context) {
     final User user = context.read<AuthService>().getCurrentUser();
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: MyDrawer(currentPage: CurrentPage.READING_LIST),
       body: Scrollbar(
         thickness: 2,
         child: CustomScrollView(

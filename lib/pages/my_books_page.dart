@@ -25,7 +25,7 @@ class _MyBooksPageState extends State<MyBooksPage> {
   Widget build(BuildContext context) {
     final User user = context.read<AuthService>().getCurrentUser();
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: MyDrawer(currentPage: CurrentPage.MY_BOOKS),
       body: Scrollbar(
         thickness: 2,
         child: CustomScrollView(

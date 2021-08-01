@@ -5,8 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+enum CurrentPage { SEARCH, PROFILE, MY_BOOKS, READING_LIST }
+
 class MyDrawer extends StatelessWidget {
-  const MyDrawer({Key? key}) : super(key: key);
+  final CurrentPage currentPage;
+  const MyDrawer({Key? key, required this.currentPage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,9 @@ class MyDrawer extends StatelessWidget {
                   Route route =
                       MaterialPageRoute(builder: (context) => SearchPage());
                   Navigator.pop(context);
-                  Navigator.push(context, route);
+                  if (currentPage != CurrentPage.SEARCH) {
+                    Navigator.push(context, route);
+                  }
                 },
               ),
               ListTile(
@@ -79,7 +84,9 @@ class MyDrawer extends StatelessWidget {
                   Route route = MaterialPageRoute(
                       builder: (context) => ReadingListPage());
                   Navigator.pop(context);
-                  Navigator.push(context, route);
+                  if (currentPage != CurrentPage.READING_LIST) {
+                    Navigator.push(context, route);
+                  }
                 },
               ),
               ListTile(

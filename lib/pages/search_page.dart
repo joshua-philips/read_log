@@ -53,7 +53,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: MyDrawer(currentPage: CurrentPage.SEARCH),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Container(
