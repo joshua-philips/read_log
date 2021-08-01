@@ -14,10 +14,11 @@ class MyBooksImage extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Route route = MaterialPageRoute(
-            builder: (context) => BookDetailsPage(
-                  book: book,
-                  documentId: documentId,
-                ));
+          builder: (context) => BookDetailsPage(
+            book: book,
+            documentId: documentId,
+          ),
+        );
         Navigator.push(context, route);
       },
       child: Container(

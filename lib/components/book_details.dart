@@ -2,9 +2,11 @@ import 'package:books_log/components/book_image.dart';
 import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/components/list_section.dart';
+import 'package:books_log/configuration/config.dart';
 import 'package:books_log/constants.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_books.dart';
+import 'package:books_log/models/my_reading_list.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/firestore_service.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -16,12 +18,14 @@ class BookDetails extends StatefulWidget {
   final bool newBook;
   final String documentId;
   final bool alreadyLogged;
+  final bool isInReadingList;
   BookDetails(
       {Key? key,
       required this.book,
       required this.newBook,
       required this.documentId,
-      required this.alreadyLogged})
+      required this.alreadyLogged,
+      required this.isInReadingList})
       : super(key: key);
 
   @override
@@ -194,59 +198,113 @@ class _BookDetailsState extends State<BookDetails> {
             ],
           ),
           SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0, right: 12),
-            child: MaterialButton(
-              color: Colors.green,
-              child: Text(widget.newBook
-                  ? widget.alreadyLogged
-                      ? 'Already Logged'
-                      : 'Add to your books'
-                  : 'Update'),
-              onPressed: () async {
-                if (widget.newBook && !widget.alreadyLogged) {
-                  String returnedString = await addToBooks(context);
-                  if (returnedString != done) {
-                    showMessageDialog(context, 'Error adding book',
-                        'Could not add to my books. Please try again');
-                  } else {
-                    showMessageSnackBar(
-                        context, widget.book.title + ' added to your books');
-                    Navigator.pop(context);
-                  }
-                } else if (!widget.newBook) {
-                  String returnedString = await updateBook(context);
-                  if (returnedString != done) {
-                    showMessageDialog(context, 'Error updating book',
-                        'Could not update book. Please try again');
-                  } else {
-                    showMessageSnackBar(
-                        context, 'Updated ' + widget.book.title);
-                    Navigator.pop(context);
-                  }
-                }
-              },
-            ),
-          ),
-          SizedBox(height: 10),
-          !widget.newBook
+          widget.newBook && !widget.alreadyLogged && !widget.isInReadingList
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  child: MaterialButton(
+                    color: Colors.green,
+                    child: Text('Add to your books'),
+                    onPressed: () async {
+                      addToBooks(context);
+                      showMessageSnackBar(
+                          context, widget.book.title + ' added to your books');
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              : Container(),
+          !widget.isInReadingList && !widget.alreadyLogged && widget.newBook
+              ? SizedBox(height: 2)
+              : Container(),
+          !widget.isInReadingList && !widget.alreadyLogged && widget.newBook
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  child: MaterialButton(
+                    color: Colors.orange.shade800,
+                    child: Text('Add to reading list'),
+                    onPressed: () {
+                      addToReadingList(context);
+                      showMessageSnackBar(context,
+                          widget.book.title + ' added to reading list');
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              : Container(),
+          widget.isInReadingList && widget.newBook && !widget.alreadyLogged
+              ? SizedBox(height: 2)
+              : Container(),
+          widget.isInReadingList && widget.newBook && !widget.alreadyLogged
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  child: MaterialButton(
+                    color: Colors.orange.shade800,
+                    child: Text('Already in reading list'),
+                    onPressed: () {},
+                  ),
+                )
+              : Container(),
+          widget.alreadyLogged && !widget.newBook
+              ? SizedBox(height: 2)
+              : Container(),
+          widget.alreadyLogged && !widget.newBook
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
                     color: Colors.red,
                     child: Text('Remove from your books'),
-                    onPressed: () async {
-                      String returnedString = await removeBook(context);
-                      if (returnedString != done) {
-                        showMessageDialog(context, 'Error',
-                            'Could not remove from my books. Please try again');
-                      } else {
-                        context.read<MyBooks>().removeFromMyBooks(
-                            widget.book.title, widget.book.author.first);
-                        showMessageSnackBar(context,
-                            widget.book.title + ' removed from your books');
-                        Navigator.pop(context);
-                      }
+                    onPressed: () {
+                      removeBook(context);
+                      context.read<MyBooks>().removeFromMyBooks(
+                          widget.book.title, widget.book.author.first);
+                      showMessageSnackBar(context,
+                          widget.book.title + ' removed from your books');
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              : Container(),
+          !widget.alreadyLogged && widget.isInReadingList && !widget.newBook
+              ? SizedBox(height: 2)
+              : Container(),
+          !widget.alreadyLogged && widget.isInReadingList && !widget.newBook
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  child: MaterialButton(
+                    color: myBlue,
+                    child: Text('Mark as read'),
+                    onPressed: () {
+                      removeFromReadingList(context);
+                      context.read<MyReadingList>().removeFromReadingList(
+                          widget.book.title, widget.book.author.first);
+                      addToBooks(context);
+                      context.read<MyBooks>().addToMyBooks(
+                          widget.book.title, widget.book.author.first);
+                      showMessageSnackBar(
+                          context,
+                          widget.book.title +
+                              ' removed from reading list \nAdded to my books');
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              : Container(),
+          !widget.alreadyLogged && widget.isInReadingList && !widget.newBook
+              ? SizedBox(height: 2)
+              : Container(),
+          !widget.alreadyLogged && widget.isInReadingList && !widget.newBook
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  child: MaterialButton(
+                    color: Colors.red,
+                    child: Text('Remove from reading list'),
+                    onPressed: () {
+                      removeFromReadingList(context);
+                      context.read<MyReadingList>().removeFromReadingList(
+                          widget.book.title, widget.book.author.first);
+                      showMessageSnackBar(context,
+                          widget.book.title + ' removed from reading list');
+                      Navigator.pop(context);
                     },
                   ),
                 )
@@ -308,6 +366,25 @@ class _BookDetailsState extends State<BookDetails> {
     }
   }
 
+  Future<String> addToReadingList(BuildContext context) async {
+    AuthService authService = context.read<AuthService>();
+    FirestoreService firestoreService = context.read<FirestoreService>();
+    if (reviewController.text.isNotEmpty) {
+      widget.book.updateReview(reviewController.text);
+    }
+    widget.book.setDateAdded(DateTime.now());
+
+    try {
+      firestoreService.uploadToReadingList(
+          widget.book, authService.getCurrentUser().uid);
+      return done;
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
+
+  // TODO: Add update button
   // TODO: Cant update Review in firestore
   Future<String> updateBook(BuildContext context) async {
     AuthService authService = context.read<AuthService>();
@@ -317,6 +394,18 @@ class _BookDetailsState extends State<BookDetails> {
       widget.book.updateReview(reviewController.text);
       firestoreService.updateBookReview(authService.getCurrentUser().uid,
           widget.documentId, reviewController.text);
+      return done;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<String> removeFromReadingList(BuildContext context) async {
+    AuthService authService = context.read<AuthService>();
+    FirestoreService firestoreService = context.read<FirestoreService>();
+    try {
+      firestoreService.removeFromReadingList(
+          authService.getCurrentUser().uid, widget.documentId);
       return done;
     } catch (e) {
       return e.toString();

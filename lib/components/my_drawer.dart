@@ -1,3 +1,4 @@
+import 'package:books_log/pages/reading_list_page.dart';
 import 'package:books_log/pages/search_page.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,7 +46,6 @@ class MyDrawer extends StatelessWidget {
                 title: Text('Search and add', style: TextStyle(fontSize: 20)),
                 contentPadding: EdgeInsets.symmetric(horizontal: 0),
                 horizontalTitleGap: 0,
-                hoverColor: Colors.blue,
                 onTap: () {
                   Route route =
                       MaterialPageRoute(builder: (context) => SearchPage());
@@ -58,7 +58,6 @@ class MyDrawer extends StatelessWidget {
                 title: Text('Profile', style: TextStyle(fontSize: 20)),
                 contentPadding: EdgeInsets.symmetric(horizontal: 0),
                 horizontalTitleGap: 0,
-                hoverColor: Colors.blue,
                 onTap: () {},
               ),
               ListTile(
@@ -66,10 +65,21 @@ class MyDrawer extends StatelessWidget {
                 title: Text('My Books', style: TextStyle(fontSize: 20)),
                 contentPadding: EdgeInsets.symmetric(horizontal: 0),
                 horizontalTitleGap: 0,
-                hoverColor: Colors.blue,
                 onTap: () {
                   Navigator.popUntil(
                       context, (route) => !Navigator.canPop(context));
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.list),
+                title: Text('Reading List', style: TextStyle(fontSize: 20)),
+                contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                horizontalTitleGap: 0,
+                onTap: () {
+                  Route route = MaterialPageRoute(
+                      builder: (context) => ReadingListPage());
+                  Navigator.pop(context);
+                  Navigator.push(context, route);
                 },
               ),
               ListTile(
@@ -77,7 +87,6 @@ class MyDrawer extends StatelessWidget {
                 title: Text('Log Out', style: TextStyle(fontSize: 20)),
                 contentPadding: EdgeInsets.symmetric(horizontal: 0),
                 horizontalTitleGap: 0,
-                hoverColor: Colors.blue,
                 onTap: () async {
                   await context.read<AuthService>().signOut();
                   Navigator.popUntil(

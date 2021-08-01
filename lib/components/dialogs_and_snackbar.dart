@@ -56,6 +56,7 @@ void showMessageSnackBar(BuildContext context, String message) {
             children: [
               Text(
                 message,
+                textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.w600),
               )
             ],

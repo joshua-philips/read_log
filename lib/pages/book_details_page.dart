@@ -1,6 +1,9 @@
 import 'package:books_log/components/book_details.dart';
 import 'package:books_log/models/book.dart';
+import 'package:books_log/models/my_books.dart';
+import 'package:books_log/models/my_reading_list.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BookDetailsPage extends StatefulWidget {
   final Book book;
@@ -25,7 +28,12 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         book: widget.book,
         newBook: false,
         documentId: widget.documentId,
-        alreadyLogged: true,
+        alreadyLogged: context
+            .read<MyBooks>()
+            .isInMyBooks(widget.book.title, widget.book.author.first),
+        isInReadingList: context
+            .read<MyReadingList>()
+            .isInReadingList(widget.book.title, widget.book.author.first),
       ),
     );
   }

@@ -8,8 +8,11 @@ class MyBooks {
   });
 
   void addToMyBooks(String title, String firstAuthor) {
-    myBooksTitles.add(title.toLowerCase());
-    myBooksAuthors.add(firstAuthor.toLowerCase());
+    if (!myBooksTitles.contains(title.toLowerCase()) &&
+        !myBooksAuthors.contains(firstAuthor.toLowerCase())) {
+      myBooksTitles.add(title.toLowerCase());
+      myBooksAuthors.add(firstAuthor.toLowerCase());
+    }
   }
 
   void removeFromMyBooks(String title, String firstAuthor) {

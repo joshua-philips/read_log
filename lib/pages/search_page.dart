@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/components/my_drawer.dart';
 import 'package:books_log/models/my_books.dart';
+import 'package:books_log/models/my_reading_list.dart';
 import 'package:books_log/models/openlibrary_search.dart';
 import 'package:books_log/pages/fetch_details_page.dart';
 import 'package:flutter/material.dart';
@@ -138,10 +139,15 @@ class _SearchPageState extends State<SearchPage> {
                     bool isLogged = context.read<MyBooks>().isInMyBooks(
                         results.docs[index].title,
                         results.docs[index].authorName.first.toString());
+                    bool inReadingList = context
+                        .read<MyReadingList>()
+                        .isInReadingList(results.docs[index].title,
+                            results.docs[index].authorName.first.toString());
                     Route route = MaterialPageRoute(
                       builder: (_) => FetchDetailsPage(
                         openLibrarySearchDoc: results.docs[index],
                         alreadyLogged: isLogged,
+                        isInReadingList: inReadingList,
                       ),
                     );
                     Navigator.push(context, route);

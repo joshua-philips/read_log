@@ -1,5 +1,6 @@
 import 'package:books_log/configuration/grid_settings.dart';
 import 'package:books_log/models/my_books.dart';
+import 'package:books_log/models/my_reading_list.dart';
 import 'package:books_log/pages/authentication_pages/login_page.dart';
 import 'package:books_log/pages/my_books_page.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -65,6 +66,9 @@ class _MyAppState extends State<MyApp> {
         Provider<StorageService>(create: (_) => StorageService()),
         Provider<MyBooks>(
             create: (_) => MyBooks(myBooksTitles: [], myBooksAuthors: [])),
+        Provider<MyReadingList>(
+            create: (_) => MyReadingList(
+                myReadingListAuthors: [], myReadingListTitles: [])),
         ChangeNotifierProvider<GridSettings>(create: (_) => GridSettings()),
       ],
       builder: (context, child) => MaterialApp(

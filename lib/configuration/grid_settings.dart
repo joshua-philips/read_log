@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GridSettings extends ChangeNotifier {
-  final String key = 'grid';
-  late bool grid;
+  final String myBooksKey = 'myBooksGrid';
+  final String readingListKey = 'readingListGrid';
+  late bool myBooksGrid;
+  late bool readingListGrid;
   late SharedPreferences prefs;
 
   GridSettings() {
-    grid = false;
+    myBooksGrid = false;
+    readingListGrid = false;
     loadFromPrefs();
   }
 
@@ -17,17 +20,25 @@ class GridSettings extends ChangeNotifier {
 
   void loadFromPrefs() async {
     await initPrefs();
-    grid = prefs.getBool(key) ?? true;
+    myBooksGrid = prefs.getBool(myBooksKey) ?? true;
+    readingListGrid = prefs.getBool(readingListKey) ?? true;
     notifyListeners();
   }
 
   void saveToPrefs() async {
     await initPrefs();
-    prefs.setBool(key, grid);
+    prefs.setBool(myBooksKey, myBooksGrid);
+    prefs.setBool(readingListKey, readingListGrid);
   }
 
-  void toggleGrid() {
-    grid = !grid;
+  void toggleMyBooksGrid() {
+    myBooksGrid = !myBooksGrid;
+    saveToPrefs();
+    notifyListeners();
+  }
+
+  void toggleReadingListGrid() {
+    readingListGrid = !readingListGrid;
     saveToPrefs();
     notifyListeners();
   }

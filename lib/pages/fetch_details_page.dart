@@ -11,10 +11,12 @@ import 'package:http/http.dart' as http;
 class FetchDetailsPage extends StatefulWidget {
   final Docs openLibrarySearchDoc;
   final bool alreadyLogged;
+  final bool isInReadingList;
   const FetchDetailsPage(
       {Key? key,
       required this.openLibrarySearchDoc,
-      required this.alreadyLogged})
+      required this.alreadyLogged,
+      required this.isInReadingList})
       : super(key: key);
 
   @override
@@ -125,6 +127,7 @@ class _FetchDetailsPageState extends State<FetchDetailsPage> {
         newBook: true,
         documentId: '',
         alreadyLogged: widget.alreadyLogged,
+        isInReadingList: widget.isInReadingList,
       );
     } else if (fetchOngoing == false && error) {
       worksResult = OpenLibraryWorks.noValues();
@@ -149,6 +152,7 @@ class _FetchDetailsPageState extends State<FetchDetailsPage> {
         book: newBook,
         newBook: true,
         alreadyLogged: widget.alreadyLogged,
+        isInReadingList: widget.isInReadingList,
         documentId: '',
       );
     } else {
