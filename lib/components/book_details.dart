@@ -2,8 +2,7 @@ import 'package:books_log/components/book_image.dart';
 import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/components/horizontal_list.dart';
 import 'package:books_log/components/list_section.dart';
-import 'package:books_log/configuration/config.dart';
-import 'package:books_log/constants.dart';
+import 'package:books_log/configuration/constants.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_books.dart';
 import 'package:books_log/models/my_reading_list.dart';
@@ -17,16 +16,12 @@ class BookDetails extends StatefulWidget {
   final Book book;
   final bool newBook;
   final String documentId;
-  final bool alreadyLogged;
-  final bool isInReadingList;
-  BookDetails(
-      {Key? key,
-      required this.book,
-      required this.newBook,
-      required this.documentId,
-      required this.alreadyLogged,
-      required this.isInReadingList})
-      : super(key: key);
+  BookDetails({
+    Key? key,
+    required this.book,
+    required this.newBook,
+    required this.documentId,
+  }) : super(key: key);
 
   @override
   _BookDetailsState createState() => _BookDetailsState();
@@ -43,6 +38,11 @@ class _BookDetailsState extends State<BookDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final bool alreadyLogged = context.select((MyBooks myBooks) =>
+        myBooks.isInMyBooks(widget.book.title, widget.book.author.first));
+    final bool isInReadingList = context.select((MyReadingList myReadingList) =>
+        myReadingList.isInReadingList(
+            widget.book.title, widget.book.author.first));
     return Scrollbar(
       thickness: 2,
       child: ListView(
@@ -198,25 +198,40 @@ class _BookDetailsState extends State<BookDetails> {
             ],
           ),
           SizedBox(height: 10),
-          widget.newBook && !widget.alreadyLogged && !widget.isInReadingList
+          widget.newBook && !alreadyLogged && !isInReadingList
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
                     color: Colors.green,
-                    child: Text('Add to your books'),
-                    onPressed: () async {
+                    child: Text('Add to my books'),
+                    onPressed: () {
                       addToBooks(context);
+                      context.read<MyBooks>().addToMyBooks(
+                          widget.book.title, widget.book.author.first);
                       showMessageSnackBar(
-                          context, widget.book.title + ' added to your books');
+                          context, widget.book.title + ' added to my books');
                       Navigator.pop(context);
                     },
                   ),
                 )
               : Container(),
-          !widget.isInReadingList && !widget.alreadyLogged && widget.newBook
+          !isInReadingList && widget.newBook && alreadyLogged
               ? SizedBox(height: 2)
               : Container(),
-          !widget.isInReadingList && !widget.alreadyLogged && widget.newBook
+          !isInReadingList && widget.newBook && alreadyLogged
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  child: MaterialButton(
+                    color: Colors.green,
+                    child: Text('Already in my books'),
+                    onPressed: () {},
+                  ),
+                )
+              : Container(),
+          !isInReadingList && !alreadyLogged && widget.newBook
+              ? SizedBox(height: 2)
+              : Container(),
+          !isInReadingList && !alreadyLogged && widget.newBook
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
@@ -224,6 +239,8 @@ class _BookDetailsState extends State<BookDetails> {
                     child: Text('Add to reading list'),
                     onPressed: () {
                       addToReadingList(context);
+                      context.read<MyReadingList>().addToReadingList(
+                          widget.book.title, widget.book.author.first);
                       showMessageSnackBar(context,
                           widget.book.title + ' added to reading list');
                       Navigator.pop(context);
@@ -231,10 +248,10 @@ class _BookDetailsState extends State<BookDetails> {
                   ),
                 )
               : Container(),
-          widget.isInReadingList && widget.newBook && !widget.alreadyLogged
+          isInReadingList && widget.newBook && !alreadyLogged
               ? SizedBox(height: 2)
               : Container(),
-          widget.isInReadingList && widget.newBook && !widget.alreadyLogged
+          isInReadingList && widget.newBook && !alreadyLogged
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
@@ -244,30 +261,28 @@ class _BookDetailsState extends State<BookDetails> {
                   ),
                 )
               : Container(),
-          widget.alreadyLogged && !widget.newBook
-              ? SizedBox(height: 2)
-              : Container(),
-          widget.alreadyLogged && !widget.newBook
+          alreadyLogged && !widget.newBook ? SizedBox(height: 2) : Container(),
+          alreadyLogged && !widget.newBook
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
                     color: Colors.red,
-                    child: Text('Remove from your books'),
+                    child: Text('Remove from my books'),
                     onPressed: () {
                       removeBook(context);
                       context.read<MyBooks>().removeFromMyBooks(
                           widget.book.title, widget.book.author.first);
                       showMessageSnackBar(context,
-                          widget.book.title + ' removed from your books');
+                          widget.book.title + ' removed from my books');
                       Navigator.pop(context);
                     },
                   ),
                 )
               : Container(),
-          !widget.alreadyLogged && widget.isInReadingList && !widget.newBook
+          !alreadyLogged && isInReadingList && !widget.newBook
               ? SizedBox(height: 2)
               : Container(),
-          !widget.alreadyLogged && widget.isInReadingList && !widget.newBook
+          !alreadyLogged && isInReadingList && !widget.newBook
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
@@ -283,16 +298,16 @@ class _BookDetailsState extends State<BookDetails> {
                       showMessageSnackBar(
                           context,
                           widget.book.title +
-                              ' removed from reading list \nAdded to my books');
+                              ' added to my books\nRemoved from reading list');
                       Navigator.pop(context);
                     },
                   ),
                 )
               : Container(),
-          !widget.alreadyLogged && widget.isInReadingList && !widget.newBook
+          !alreadyLogged && isInReadingList && !widget.newBook
               ? SizedBox(height: 2)
               : Container(),
-          !widget.alreadyLogged && widget.isInReadingList && !widget.newBook
+          !alreadyLogged && isInReadingList && !widget.newBook
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
@@ -310,6 +325,10 @@ class _BookDetailsState extends State<BookDetails> {
                 )
               : Container(),
           SizedBox(height: 20),
+          // TODO: What is causing this error for some books. Might have to rethink alreadyLogged/isInReadingList maybe use ChangeNotifier for those models
+          !alreadyLogged && !isInReadingList && !widget.newBook
+              ? MaterialButton(child: Text('What is this'), onPressed: () {})
+              : Container(),
         ],
       ),
     );
@@ -348,7 +367,7 @@ class _BookDetailsState extends State<BookDetails> {
     );
   }
 
-  Future<String> addToBooks(BuildContext context) async {
+  String addToBooks(BuildContext context) {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
     if (reviewController.text.isNotEmpty) {
@@ -366,7 +385,7 @@ class _BookDetailsState extends State<BookDetails> {
     }
   }
 
-  Future<String> addToReadingList(BuildContext context) async {
+  String addToReadingList(BuildContext context) {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
     if (reviewController.text.isNotEmpty) {
@@ -386,10 +405,9 @@ class _BookDetailsState extends State<BookDetails> {
 
   // TODO: Add update button
   // TODO: Cant update Review in firestore
-  Future<String> updateBook(BuildContext context) async {
+  String updateBook(BuildContext context) {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
-
     try {
       widget.book.updateReview(reviewController.text);
       firestoreService.updateBookReview(authService.getCurrentUser().uid,
@@ -400,7 +418,7 @@ class _BookDetailsState extends State<BookDetails> {
     }
   }
 
-  Future<String> removeFromReadingList(BuildContext context) async {
+  String removeFromReadingList(BuildContext context) {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
     try {
@@ -412,7 +430,7 @@ class _BookDetailsState extends State<BookDetails> {
     }
   }
 
-  Future<String> removeBook(BuildContext context) async {
+  String removeBook(BuildContext context) {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
     try {

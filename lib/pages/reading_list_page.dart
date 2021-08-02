@@ -5,6 +5,7 @@ import 'package:books_log/configuration/grid_settings.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_reading_list.dart';
 import 'package:books_log/pages/book_details_page.dart';
+import 'package:books_log/pages/search_page.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -93,6 +94,15 @@ class _ReadingListPageState extends State<ReadingListPage> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
+        mini: true,
+        child: Icon(Icons.add, color: Colors.white.withOpacity(0.7)),
+        onPressed: () {
+          Route route = MaterialPageRoute(builder: (context) => SearchPage());
+          Navigator.push(context, route);
+        },
       ),
     );
   }

@@ -42,7 +42,7 @@ void showMessageDialog(BuildContext context, String title, String message) {
 
 void showMessageSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    duration: Duration(seconds: 4),
+    duration: Duration(seconds: 5),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5),
     ),
