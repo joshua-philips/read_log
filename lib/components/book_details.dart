@@ -6,6 +6,8 @@ import 'package:books_log/configuration/constants.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_books.dart';
 import 'package:books_log/models/my_reading_list.dart';
+import 'package:books_log/pages/my_books_page.dart';
+import 'package:books_log/pages/reading_list_page.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/firestore_service.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -223,8 +225,12 @@ class _BookDetailsState extends State<BookDetails> {
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
                     color: Colors.green,
-                    child: Text('In my books'),
-                    onPressed: () {},
+                    child: Text('In my books. Go to My Books'),
+                    onPressed: () {
+                      Route route = MaterialPageRoute(
+                          builder: (context) => MyBooksPage());
+                      Navigator.push(context, route);
+                    },
                   ),
                 )
               : Container(),
@@ -255,8 +261,12 @@ class _BookDetailsState extends State<BookDetails> {
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
                     color: Colors.orange.shade800,
-                    child: Text('In reading list'),
-                    onPressed: () {},
+                    child: Text('In reading list. Go to Reading List'),
+                    onPressed: () {
+                      Route route = MaterialPageRoute(
+                          builder: (context) => ReadingListPage());
+                      Navigator.push(context, route);
+                    },
                   ),
                 )
               : Container(),

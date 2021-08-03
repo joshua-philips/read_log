@@ -72,6 +72,7 @@ class BookImageToDialog extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (context) => buildImageDialog(
             context,
