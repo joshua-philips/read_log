@@ -14,6 +14,8 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Complete view containing all the book details to display and buttons
+/// based on the location of the book in firestore (Reading List or My Books)
 class BookDetails extends StatefulWidget {
   final Book book;
   final bool newBook;
@@ -96,7 +98,7 @@ class _BookDetailsState extends State<BookDetails> {
           widget.book.summary.isNotEmpty ? Divider() : Container(),
           widget.book.summary.isNotEmpty
               ? Padding(
-                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  padding: const EdgeInsets.only(left: 8.0, right: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

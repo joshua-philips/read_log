@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// List of already logged books in My Books
 class MyBooks extends ChangeNotifier {
   List<String> myBooksTitles = [];
   List<String> myBooksAuthors = [];

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Save and update the grid settings of Reading List page and
+/// My Books page using ChangeNotifier and SharedPreferences
 class GridSettings extends ChangeNotifier {
   final String myBooksKey = 'myBooksGrid';
   final String readingListKey = 'readingListGrid';

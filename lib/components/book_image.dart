@@ -3,6 +3,8 @@ import 'package:books_log/models/book.dart';
 import 'package:books_log/pages/book_details_page.dart';
 import 'package:flutter/material.dart';
 
+/// Grid Image to be displlayed by stream. Displays book details
+/// when tap
 class MyBooksImage extends StatelessWidget {
   final Book book;
   final String documentId;
@@ -63,6 +65,7 @@ class MyBooksImage extends StatelessWidget {
   }
 }
 
+/// Displays cover image in book details. Shows image dialog on tap
 class BookImageToDialog extends StatelessWidget {
   final Book book;
   const BookImageToDialog({Key? key, required this.book}) : super(key: key);
@@ -123,6 +126,8 @@ class BookImageToDialog extends StatelessWidget {
   }
 }
 
+/// Normal book image with no functionality apart from displaying
+/// book cover. Used in Card in Listview
 class BookImage extends StatelessWidget {
   final Book book;
   const BookImage({Key? key, required this.book}) : super(key: key);

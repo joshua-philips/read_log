@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Displays List<Widget> in horizontal ListView
 class ListSection extends StatelessWidget {
   final String sectionTitle;
   final List<Widget> children;
@@ -11,7 +12,7 @@ class ListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 12.0, right: 12),
+      padding: const EdgeInsets.only(left: 8.0, right: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

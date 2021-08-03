@@ -20,6 +20,7 @@ class MyDrawer extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
           child: ListView(
+            physics: BouncingScrollPhysics(),
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
