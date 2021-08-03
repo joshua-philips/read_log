@@ -172,7 +172,7 @@ class _BookDetailsState extends State<BookDetails> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'REVIEW',
+                  'NOTES & REVIEW',
                   style: TextStyle(color: Colors.white.withOpacity(0.7)),
                 ),
                 SizedBox(height: 10),
@@ -266,6 +266,28 @@ class _BookDetailsState extends State<BookDetails> {
                       Route route = MaterialPageRoute(
                           builder: (context) => ReadingListPage());
                       Navigator.push(context, route);
+                    },
+                  ),
+                )
+              : Container(),
+          !widget.newBook ? SizedBox(height: 2) : Container(),
+          !widget.newBook
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12),
+                  child: MaterialButton(
+                    color: Colors.green,
+                    child: Text('Update Notes & Review'),
+                    onPressed: () {
+                      if (reviewController.text.compareTo(widget.book.review) !=
+                          0) {
+                        updateBook(context, alreadyLogged);
+                        showMessageSnackBar(
+                            context, widget.book.title + ' review updated');
+                        Navigator.pop(context);
+                      } else {
+                        showMessageSnackBar(
+                            context, 'No change in your notes/review');
+                      }
                     },
                   ),
                 )
@@ -408,15 +430,17 @@ class _BookDetailsState extends State<BookDetails> {
     }
   }
 
-  // TODO: Add update button
-  // TODO: Cant update Review in firestore
-  String updateBook(BuildContext context) {
+  String updateBook(BuildContext context, bool alreadyLogged) {
     AuthService authService = context.read<AuthService>();
     FirestoreService firestoreService = context.read<FirestoreService>();
+
     try {
       widget.book.updateReview(reviewController.text);
-      firestoreService.updateBookReview(authService.getCurrentUser().uid,
-          widget.documentId, reviewController.text);
+      firestoreService.updateBookReview(
+          alreadyLogged,
+          authService.getCurrentUser().uid,
+          widget.documentId,
+          reviewController.text);
       return done;
     } catch (e) {
       return e.toString();

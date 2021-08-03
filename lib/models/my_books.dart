@@ -22,9 +22,11 @@ class MyBooks extends ChangeNotifier {
   }
 
   void removeFromMyBooks(String title, String firstAuthor) {
-    myBooksTitles.remove(title.toLowerCase());
-    myBooksAuthors.remove(firstAuthor.toLowerCase());
-
+    while (myBooksTitles.contains(title.toLowerCase()) &&
+        myBooksAuthors.contains(firstAuthor.toLowerCase())) {
+      myBooksTitles.remove(title.toLowerCase());
+      myBooksAuthors.remove(firstAuthor.toLowerCase());
+    }
     notifyListeners();
   }
 

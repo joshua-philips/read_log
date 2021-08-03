@@ -22,8 +22,11 @@ class MyReadingList extends ChangeNotifier {
   }
 
   void removeFromReadingList(String title, String firstAuthor) {
-    myReadingListTitles.remove(title.toLowerCase());
-    myReadingListAuthors.remove(firstAuthor.toLowerCase());
+    while (myReadingListTitles.contains(title.toLowerCase()) &&
+        myReadingListAuthors.contains(firstAuthor.toLowerCase())) {
+      myReadingListTitles.remove(title.toLowerCase());
+      myReadingListAuthors.remove(firstAuthor.toLowerCase());
+    }
 
     notifyListeners();
   }

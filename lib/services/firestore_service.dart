@@ -19,7 +19,7 @@ class FirestoreService {
         .doc(uid)
         .collection('books')
         .orderBy('dateAdded', descending: true)
-        .snapshots();
+        .snapshots(includeMetadataChanges: true);
   }
 
   Future<void> uploadToReadingList(Book book, String uid) {
@@ -37,7 +37,7 @@ class FirestoreService {
         .doc(uid)
         .collection('readingList')
         .orderBy('dateAdded', descending: false)
-        .snapshots();
+        .snapshots(includeMetadataChanges: true);
   }
 
   Future<void> removeFromReadingList(String uid, String documentId) {
@@ -60,11 +60,12 @@ class FirestoreService {
         .catchError((error) => error);
   }
 
-  Future<void> updateBookReview(String uid, String documentId, String review) {
+  Future<void> updateBookReview(
+      bool inBooks, String uid, String documentId, String review) {
     return _firestore
         .collection('user')
-        .doc('uid')
-        .collection('books')
+        .doc(uid)
+        .collection(inBooks ? 'books' : 'readingList')
         .doc(documentId)
         .update({'review': review}).catchError(
             (error) => print('ERROR: $error'));
