@@ -38,11 +38,12 @@ class _BookDetailsState extends State<BookDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final bool alreadyLogged = context.select((MyBooks myBooks) =>
-        myBooks.isInMyBooks(widget.book.title, widget.book.author.first));
-    final bool isInReadingList = context.select((MyReadingList myReadingList) =>
-        myReadingList.isInReadingList(
-            widget.book.title, widget.book.author.first));
+    bool alreadyLogged = context
+        .watch<MyBooks>()
+        .isInMyBooks(widget.book.title, widget.book.author.first);
+    bool isInReadingList = context
+        .watch<MyReadingList>()
+        .isInReadingList(widget.book.title, widget.book.author.first);
     return Scrollbar(
       thickness: 2,
       child: ListView(
@@ -206,11 +207,10 @@ class _BookDetailsState extends State<BookDetails> {
                     child: Text('Add to my books'),
                     onPressed: () {
                       addToBooks(context);
-                      context.read<MyBooks>().addToMyBooks(
+                      context.read<MyBooks>().addNewToMyBooks(
                           widget.book.title, widget.book.author.first);
                       showMessageSnackBar(
                           context, widget.book.title + ' added to my books');
-                      Navigator.pop(context);
                     },
                   ),
                 )
@@ -223,7 +223,7 @@ class _BookDetailsState extends State<BookDetails> {
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
                     color: Colors.green,
-                    child: Text('Already in my books'),
+                    child: Text('In my books'),
                     onPressed: () {},
                   ),
                 )
@@ -239,11 +239,10 @@ class _BookDetailsState extends State<BookDetails> {
                     child: Text('Add to reading list'),
                     onPressed: () {
                       addToReadingList(context);
-                      context.read<MyReadingList>().addToReadingList(
+                      context.read<MyReadingList>().addNewToReadingList(
                           widget.book.title, widget.book.author.first);
                       showMessageSnackBar(context,
                           widget.book.title + ' added to reading list');
-                      Navigator.pop(context);
                     },
                   ),
                 )
@@ -256,7 +255,7 @@ class _BookDetailsState extends State<BookDetails> {
                   padding: const EdgeInsets.only(left: 12.0, right: 12),
                   child: MaterialButton(
                     color: Colors.orange.shade800,
-                    child: Text('Already in reading list'),
+                    child: Text('In reading list'),
                     onPressed: () {},
                   ),
                 )
@@ -293,7 +292,7 @@ class _BookDetailsState extends State<BookDetails> {
                       context.read<MyReadingList>().removeFromReadingList(
                           widget.book.title, widget.book.author.first);
                       addToBooks(context);
-                      context.read<MyBooks>().addToMyBooks(
+                      context.read<MyBooks>().addNewToMyBooks(
                           widget.book.title, widget.book.author.first);
                       showMessageSnackBar(
                           context,
@@ -325,10 +324,6 @@ class _BookDetailsState extends State<BookDetails> {
                 )
               : Container(),
           SizedBox(height: 20),
-          // TODO: What is causing this error for some books. Might have to rethink alreadyLogged/isInReadingList maybe use ChangeNotifier for those models
-          !alreadyLogged && !isInReadingList && !widget.newBook
-              ? MaterialButton(child: Text('What is this'), onPressed: () {})
-              : Container(),
         ],
       ),
     );

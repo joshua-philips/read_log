@@ -64,9 +64,9 @@ class _MyAppState extends State<MyApp> {
         Provider<AuthService>(create: (_) => AuthService()),
         Provider<FirestoreService>(create: (_) => FirestoreService()),
         Provider<StorageService>(create: (_) => StorageService()),
-        Provider<MyBooks>(
+        ChangeNotifierProvider<MyBooks>(
             create: (_) => MyBooks(myBooksTitles: [], myBooksAuthors: [])),
-        Provider<MyReadingList>(
+        ChangeNotifierProvider<MyReadingList>(
             create: (_) => MyReadingList(
                 myReadingListAuthors: [], myReadingListTitles: [])),
         ChangeNotifierProvider<GridSettings>(create: (_) => GridSettings()),

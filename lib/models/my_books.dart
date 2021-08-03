@@ -1,4 +1,6 @@
-class MyBooks {
+import 'package:flutter/material.dart';
+
+class MyBooks extends ChangeNotifier {
   List<String> myBooksTitles = [];
   List<String> myBooksAuthors = [];
 
@@ -8,19 +10,22 @@ class MyBooks {
   });
 
   void addToMyBooks(String title, String firstAuthor) {
-    if (!myBooksTitles.contains(title.toLowerCase()) &&
-        !myBooksAuthors.contains(firstAuthor.toLowerCase())) {
-      myBooksTitles.add(title.toLowerCase());
-      myBooksAuthors.add(firstAuthor.toLowerCase());
-    }
+    myBooksTitles.add(title.toLowerCase());
+    myBooksAuthors.add(firstAuthor.toLowerCase());
+  }
+
+  void addNewToMyBooks(String title, String firstAuthor) {
+    myBooksTitles.add(title.toLowerCase());
+    myBooksAuthors.add(firstAuthor.toLowerCase());
+
+    notifyListeners();
   }
 
   void removeFromMyBooks(String title, String firstAuthor) {
-    if (myBooksTitles.contains(title.toLowerCase()) &&
-        myBooksAuthors.contains(firstAuthor.toLowerCase())) {
-      myBooksTitles.remove(title.toLowerCase());
-      myBooksAuthors.remove(firstAuthor.toLowerCase());
-    }
+    myBooksTitles.remove(title.toLowerCase());
+    myBooksAuthors.remove(firstAuthor.toLowerCase());
+
+    notifyListeners();
   }
 
   bool isInMyBooks(String title, String firstAuthor) {
