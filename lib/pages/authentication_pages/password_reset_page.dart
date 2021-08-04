@@ -1,5 +1,10 @@
 import 'package:books_log/components/auth_text_formfield.dart';
+import 'package:books_log/components/dialogs_and_snackbar.dart';
+import 'package:books_log/configuration/constants.dart';
+import 'package:books_log/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PasswordResetPage extends StatelessWidget {
   const PasswordResetPage({Key? key}) : super(key: key);
@@ -63,7 +68,7 @@ class PasswordResetPage extends StatelessWidget {
                   borderRadius: new BorderRadius.circular(8),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                backgroundColor: Color(0xff07446C),
+                backgroundColor: myBlue,
               ),
               child: Text(
                 "Send reset email",
@@ -73,11 +78,17 @@ class PasswordResetPage extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  print('Reset button');
-                  // TODO: Password Reset
-                  Navigator.pop(context);
+                  String returnedString =
+                      await sendResetEmail(emailController.text, context);
+                  if (returnedString != done) {
+                    showMessageDialog(context, 'Error', returnedString);
+                  } else {
+                    showMessageSnackBar(context,
+                        'Password reset email sent. Check your inbox.');
+                    Navigator.pop(context);
+                  }
                 }
               },
             ),
@@ -85,5 +96,18 @@ class PasswordResetPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<String> sendResetEmail(String email, BuildContext context) async {
+    try {
+      await context.read<AuthService>().sendPasswordResetMail(email);
+      return done;
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      return e.message!;
+    } on Exception catch (e) {
+      print(e);
+      return e.toString();
+    }
   }
 }

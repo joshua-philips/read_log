@@ -28,4 +28,8 @@ class AuthService {
   Future<void> setProfilePhoto(String photoUrl) async {
     await _firebaseAuth.currentUser!.updatePhotoURL(photoUrl);
   }
+
+  Future<void> sendPasswordResetMail(String email) {
+    return _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
 }
