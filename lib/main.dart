@@ -82,6 +82,11 @@ class _MyAppState extends State<MyApp> {
           textSelectionTheme: TextSelectionThemeData(
             cursorColor: Colors.green,
           ),
+          pageTransitionsTheme: PageTransitionsTheme(
+            builders: {
+              TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+            },
+          ),
         ),
         home: HomeController(),
       ),

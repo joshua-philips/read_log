@@ -22,7 +22,7 @@ class AuthTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         prefixIcon: Icon(
           prefixIcon,
-          color: Color(0xff85B634),
+          color: Colors.green,
           size: 20,
         ),
         hintText: hintText,

@@ -1,4 +1,5 @@
 import 'package:books_log/components/auth_text_formfield.dart';
+import 'package:books_log/components/blue_button.dart';
 import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/configuration/constants.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -14,85 +15,91 @@ class PasswordResetPage extends StatelessWidget {
     final formKey = GlobalKey<FormState>();
     final TextEditingController emailController = TextEditingController();
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-              child: Column(
-                children: [
-                  Padding(padding: EdgeInsets.only()),
-                  SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 90),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: Text(
+                  "Reset Password",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text(
+                  "Your password reset link will be sent to the user's email address.\nMake sure to provide the correct address.",
+                  style: TextStyle(fontSize: 20, color: myGrey),
+                ),
+              ),
+              Container(
+                margin:
+                    EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
+                child: Form(
+                  key: formKey,
+                  child: Column(
                     children: [
-                      Text(
-                        "Reset Password",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      AuthTextFormField(
+                        controller: emailController,
+                        hintText: 'Email Address',
+                        prefixIcon: Icons.email,
+                        validator: (val) =>
+                            !val!.contains('@') && !val.contains('.')
+                                ? 'Invalid Email'
+                                : null,
+                        obscureText: false,
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, bottom: 30, top: 70),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    AuthTextFormField(
-                      controller: emailController,
-                      hintText: 'Email Address',
-                      prefixIcon: Icons.email,
-                      validator: (val) =>
-                          !val!.contains('@') && !val.contains('.')
-                              ? 'Invalid Email'
-                              : null,
-                      obscureText: false,
-                    ),
-                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 30),
-            TextButton(
-              style: TextButton.styleFrom(
-                shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(8),
+              SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: BlueButton(
+                  buttonText: 'Send Reset Email',
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      String returnedString =
+                          await sendResetEmail(emailController.text, context);
+                      if (returnedString != done) {
+                        showMessageDialog(context, 'Error', returnedString);
+                      } else {
+                        showMessageSnackBar(context,
+                            'Password reset email sent. Check your inbox.');
+                        Navigator.pop(context);
+                      }
+                    }
+                  },
                 ),
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                backgroundColor: myBlue,
               ),
-              child: Text(
-                "Send reset email",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  String returnedString =
-                      await sendResetEmail(emailController.text, context);
-                  if (returnedString != done) {
-                    showMessageDialog(context, 'Error', returnedString);
-                  } else {
-                    showMessageSnackBar(context,
-                        'Password reset email sent. Check your inbox.');
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: MaterialButton(
+                  color: Colors.red,
+                  minWidth: double.maxFinite,
+                  height: 45,
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onPressed: () {
                     Navigator.pop(context);
-                  }
-                }
-              },
-            ),
-          ],
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

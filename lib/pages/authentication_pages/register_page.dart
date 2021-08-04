@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:books_log/components/auth_text_formfield.dart';
+import 'package:books_log/components/blue_button.dart';
 import 'package:books_log/components/dialogs_and_snackbar.dart';
 import 'package:books_log/configuration/constants.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -29,156 +30,138 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-              child: Column(
-                children: [
-                  Padding(padding: EdgeInsets.only()),
-                  SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        "Register",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, bottom: 30),
-              child: Form(
-                key: formKey,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
                 child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        selectImage();
-                      },
-                      child: CircleAvatar(
-                        radius: 60,
-                        child: photoSet
-                            ? Container()
-                            : Icon(
-                                Icons.add_a_photo_rounded,
-                                size: 40,
-                              ),
-                        backgroundImage: photoSet ? FileImage(imageFile) : null,
+                    Text(
+                      "Register",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    AuthTextFormField(
-                      controller: nameController,
-                      hintText: 'Name',
-                      prefixIcon: Icons.person,
-                      validator: (val) => val!.length < 3
-                          ? 'Name must contain at least 3 characters'
-                          : null,
-                      obscureText: false,
-                    ),
-                    SizedBox(height: 15),
-                    AuthTextFormField(
-                      controller: emailController,
-                      hintText: 'Email Address',
-                      prefixIcon: Icons.email,
-                      validator: (val) =>
-                          !val!.contains('@') && !val.contains('.')
-                              ? 'Invalid Email'
-                              : null,
-                      obscureText: false,
-                    ),
-                    SizedBox(height: 15),
-                    AuthTextFormField(
-                      controller: passwordController,
-                      hintText: 'Password',
-                      prefixIcon: Icons.password,
-                      validator: (val) =>
-                          val!.length < 6 ? 'Invalid Password' : null,
-                      obscureText: true,
-                    ),
-                    SizedBox(height: 15),
-                    AuthTextFormField(
-                      controller: cPasswordController,
-                      hintText: 'Confirm Password',
-                      prefixIcon: Icons.password,
-                      validator: (val) => val != passwordController.text
-                          ? 'Password does not match'
-                          : null,
-                      obscureText: true,
                     ),
                   ],
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            TextButton(
-              style: TextButton.styleFrom(
-                shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                backgroundColor: Color(0xff07446C),
-              ),
-              onPressed: () async {
-                if (formKey.currentState!.validate() && photoSet) {
-                  showLoadingDialog(context);
-                  String returnedString = await register(context);
-                  if (returnedString != done) {
-                    Navigator.pop(context);
-                    showMessageDialog(context, 'Error', returnedString);
-                  } else {
-                    Navigator.popUntil(
-                        context, (route) => !Navigator.canPop(context));
-                  }
-                } else if (photoSet == false) {
-                  showMessageDialog(context, 'No profile picture',
-                      'Please select a profile photo');
-                }
-              },
-              child: Text(
-                "Register",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Already have an account? ",
-                  style: TextStyle(fontSize: 20, color: Color(0xff757575)),
-                ),
-                GestureDetector(
-                  child: Text(
-                    "Login",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
+              Container(
+                margin: EdgeInsets.only(left: 20, right: 20, bottom: 30),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          selectImage();
+                        },
+                        child: CircleAvatar(
+                          radius: 60,
+                          child: photoSet
+                              ? Container()
+                              : Icon(
+                                  Icons.add_a_photo_rounded,
+                                  size: 40,
+                                ),
+                          backgroundImage:
+                              photoSet ? FileImage(imageFile) : null,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      AuthTextFormField(
+                        controller: nameController,
+                        hintText: 'Name',
+                        prefixIcon: Icons.person,
+                        validator: (val) => val!.length < 3
+                            ? 'Name must contain at least 3 characters'
+                            : null,
+                        obscureText: false,
+                      ),
+                      SizedBox(height: 15),
+                      AuthTextFormField(
+                        controller: emailController,
+                        hintText: 'Email Address',
+                        prefixIcon: Icons.email,
+                        validator: (val) =>
+                            !val!.contains('@') && !val.contains('.')
+                                ? 'Invalid Email'
+                                : null,
+                        obscureText: false,
+                      ),
+                      SizedBox(height: 15),
+                      AuthTextFormField(
+                        controller: passwordController,
+                        hintText: 'Password',
+                        prefixIcon: Icons.password,
+                        validator: (val) =>
+                            val!.length < 6 ? 'Invalid Password' : null,
+                        obscureText: true,
+                      ),
+                      SizedBox(height: 15),
+                      AuthTextFormField(
+                        controller: cPasswordController,
+                        hintText: 'Confirm Password',
+                        prefixIcon: Icons.password,
+                        validator: (val) => val != passwordController.text
+                            ? 'Password does not match'
+                            : null,
+                        obscureText: true,
+                      ),
+                    ],
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: BlueButton(
+                  buttonText: 'Register',
+                  onPressed: () async {
+                    if (formKey.currentState!.validate() && photoSet) {
+                      showLoadingDialog(context);
+                      String returnedString = await register(context);
+                      if (returnedString != done) {
+                        Navigator.pop(context);
+                        showMessageDialog(context, 'Error', returnedString);
+                      } else {
+                        Navigator.popUntil(
+                            context, (route) => !Navigator.canPop(context));
+                      }
+                    } else if (photoSet == false) {
+                      showMessageDialog(context, 'No profile picture',
+                          'Please select a profile photo');
+                    }
                   },
-                )
-              ],
-            ),
-            SizedBox(height: 30),
-          ],
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already have an account? ",
+                    style: TextStyle(fontSize: 20, color: Color(0xff757575)),
+                  ),
+                  GestureDetector(
+                    child: Text(
+                      "Login",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.green,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              ),
+              SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );
