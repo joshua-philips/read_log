@@ -1,3 +1,4 @@
+import 'package:books_log/components/bottom_sheet.dart';
 import 'package:books_log/components/image_dialog.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/pages/book_details_page.dart';
@@ -14,6 +15,19 @@ class MyBooksImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5),
+              topRight: Radius.circular(5),
+            ),
+          ),
+          builder: (context) =>
+              MyBottomSheet(book: book, documentId: documentId),
+        );
+      },
       onTap: () {
         Route route = MaterialPageRoute(
           builder: (context) => BookDetailsPage(

@@ -1,10 +1,9 @@
 import 'package:books_log/components/book_image.dart';
-import 'package:books_log/components/horizontal_list.dart';
+import 'package:books_log/components/my_books_card.dart';
 import 'package:books_log/components/my_drawer.dart';
 import 'package:books_log/configuration/grid_settings.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_reading_list.dart';
-import 'package:books_log/pages/book_details_page.dart';
 import 'package:books_log/pages/search_page.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/firestore_service.dart';
@@ -36,8 +35,8 @@ class _ReadingListPageState extends State<ReadingListPage> {
               actions: [
                 IconButton(
                   icon: Icon(context.watch<GridSettings>().readingListGrid
-                      ? Icons.list_rounded
-                      : Icons.grid_on_rounded),
+                      ? Icons.view_list_rounded
+                      : Icons.view_array_rounded),
                   onPressed: () {
                     context.read<GridSettings>().toggleReadingListGrid();
                   },
@@ -139,49 +138,7 @@ class _ReadingListPageState extends State<ReadingListPage> {
           context
               .read<MyReadingList>()
               .addToReadingList(book.title, book.author.first);
-          return Card(
-            margin: EdgeInsets.only(bottom: 8),
-            child: InkWell(
-              onTap: () {
-                Route route = MaterialPageRoute(
-                  builder: (context) =>
-                      BookDetailsPage(book: book, documentId: document.id),
-                );
-                Navigator.push(context, route);
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                child: Row(
-                  children: [
-                    BookImage(book: book),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            book.title,
-                            style: TextStyle(fontSize: 22),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: SizedBox(
-                              height: 25,
-                              child: ListView(
-                                physics: BouncingScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                children: writersRow(book.author),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
+          return MyBooksCard(book: book, documentId: document.id);
         }).toList(),
       );
     }

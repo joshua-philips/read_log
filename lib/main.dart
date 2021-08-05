@@ -57,6 +57,7 @@ class _MyAppState extends State<MyApp> {
     // Show a loader until FlutterFire is initialized
     if (!_initialized) {
       return Container();
+      // TODO: Loader/Splash
     }
 
     return MultiProvider(
@@ -112,6 +113,7 @@ class HomeController extends StatelessWidget {
         return Scaffold(
           body: Center(
             child: Text('Loading...'),
+            // TODO: Loader/Splash
           ),
         );
       },
