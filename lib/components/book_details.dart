@@ -284,7 +284,7 @@ class _BookDetailsState extends State<BookDetails> {
                           0) {
                         updateBook(context, alreadyLogged);
                         showMessageSnackBar(
-                            context, widget.book.title + ' review updated');
+                            context, widget.book.title + ' updated');
                         Navigator.pop(context);
                       } else {
                         showMessageSnackBar(

@@ -1,3 +1,4 @@
+import 'package:books_log/pages/profile_page.dart';
 import 'package:books_log/pages/reading_list_page.dart';
 import 'package:books_log/pages/search_page.dart';
 import 'package:books_log/services/auth_service.dart';
@@ -35,7 +36,7 @@ class MyDrawer extends StatelessWidget {
                         .withOpacity(0.7)),
               ),
               currentAccountPicture: Material(
-                elevation: 8,
+                elevation: 12,
                 borderRadius: BorderRadius.circular(80),
                 child: CircleAvatar(
                   foregroundImage: NetworkImage(user.photoURL!),
@@ -50,14 +51,21 @@ class MyDrawer extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: Icon(Icons.person_rounded),
-                    title: Text('Profile', style: TextStyle(fontSize: 20)),
+                    title: Text('Profile', style: TextStyle(fontSize: 18)),
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     horizontalTitleGap: 0,
-                    onTap: () {},
+                    onTap: () {
+                      Route route = MaterialPageRoute(
+                          builder: (context) => ProfilePage());
+                      Navigator.pop(context);
+                      if (currentPage != CurrentPage.PROFILE) {
+                        Navigator.push(context, route);
+                      }
+                    },
                   ),
                   ListTile(
                     leading: Icon(Icons.book_rounded),
-                    title: Text('My Books', style: TextStyle(fontSize: 20)),
+                    title: Text('My Books', style: TextStyle(fontSize: 18)),
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     horizontalTitleGap: 0,
                     onTap: () {
@@ -67,7 +75,7 @@ class MyDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: Icon(Icons.search),
-                    title: Text('Search & Add', style: TextStyle(fontSize: 20)),
+                    title: Text('Search & Add', style: TextStyle(fontSize: 18)),
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     horizontalTitleGap: 0,
                     onTap: () {
@@ -81,7 +89,7 @@ class MyDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: Icon(Icons.watch_later_rounded),
-                    title: Text('Reading List', style: TextStyle(fontSize: 20)),
+                    title: Text('Reading List', style: TextStyle(fontSize: 18)),
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     horizontalTitleGap: 0,
                     onTap: () {
@@ -103,7 +111,7 @@ class MyDrawer extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: Icon(Icons.logout_rounded),
-                    title: Text('Log Out', style: TextStyle(fontSize: 20)),
+                    title: Text('Log Out', style: TextStyle(fontSize: 18)),
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     horizontalTitleGap: 0,
                     onTap: () async {
@@ -111,6 +119,13 @@ class MyDrawer extends StatelessWidget {
                       Navigator.popUntil(
                           context, (route) => !Navigator.canPop(context));
                     },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.settings_rounded),
+                    title: Text('Settings', style: TextStyle(fontSize: 18)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    horizontalTitleGap: 0,
+                    onTap: () {},
                   ),
                 ],
               ),

@@ -88,6 +88,7 @@ class _MyAppState extends State<MyApp> {
               TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
             },
           ),
+          dividerTheme: DividerThemeData(thickness: 1.5),
         ),
         home: HomeController(),
       ),

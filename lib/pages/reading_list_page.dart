@@ -69,7 +69,11 @@ class _ReadingListPageState extends State<ReadingListPage> {
                             ConnectionState.waiting) {
                           return Container(
                             height: MediaQuery.of(context).size.height / 1.5,
-                            child: Center(child: Text("Loading...")),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.green,
+                              ),
+                            ),
                           );
                         }
 
