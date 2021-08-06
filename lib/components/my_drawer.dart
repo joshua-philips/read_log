@@ -17,92 +17,105 @@ class MyDrawer extends StatelessWidget {
     return Drawer(
       child: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
-          child: ListView(
-            physics: BouncingScrollPhysics(),
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(
+                user.displayName!,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              accountEmail: Text(
+                user.email!,
+                style: TextStyle(
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyText2!
+                        .color!
+                        .withOpacity(0.7)),
+              ),
+              currentAccountPicture: Material(
+                elevation: 8,
+                borderRadius: BorderRadius.circular(80),
+                child: CircleAvatar(
+                  foregroundImage: NetworkImage(user.photoURL!),
+                  onForegroundImageError: (exception, stackTrace) =>
+                      Text(user.displayName![0]),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
                 children: [
-                  Material(
-                    elevation: 8,
-                    borderRadius: BorderRadius.circular(80),
-                    child: CircleAvatar(
-                      foregroundImage: NetworkImage(user.photoURL!),
-                      radius: 70,
-                      onForegroundImageError: (exception, stackTrace) =>
-                          Text(user.displayName![0]),
-                    ),
+                  ListTile(
+                    leading: Icon(Icons.person_rounded),
+                    title: Text('Profile', style: TextStyle(fontSize: 20)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    horizontalTitleGap: 0,
+                    onTap: () {},
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    user.displayName!,
-                    style: TextStyle(fontSize: 25),
+                  ListTile(
+                    leading: Icon(Icons.book_rounded),
+                    title: Text('My Books', style: TextStyle(fontSize: 20)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    horizontalTitleGap: 0,
+                    onTap: () {
+                      Navigator.popUntil(
+                          context, (route) => !Navigator.canPop(context));
+                    },
                   ),
-                  SizedBox(height: 10),
-                  Text(user.email!, style: TextStyle(fontSize: 18)),
+                  ListTile(
+                    leading: Icon(Icons.search),
+                    title: Text('Search & Add', style: TextStyle(fontSize: 20)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    horizontalTitleGap: 0,
+                    onTap: () {
+                      Route route =
+                          MaterialPageRoute(builder: (context) => SearchPage());
+                      Navigator.pop(context);
+                      if (currentPage != CurrentPage.SEARCH) {
+                        Navigator.push(context, route);
+                      }
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.watch_later_rounded),
+                    title: Text('Reading List', style: TextStyle(fontSize: 20)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    horizontalTitleGap: 0,
+                    onTap: () {
+                      Route route = MaterialPageRoute(
+                          builder: (context) => ReadingListPage());
+                      Navigator.pop(context);
+                      if (currentPage != CurrentPage.READING_LIST) {
+                        Navigator.push(context, route);
+                      }
+                    },
+                  ),
                 ],
               ),
-              Divider(),
-              ListTile(
-                leading: Icon(Icons.search),
-                title: Text('Search and add', style: TextStyle(fontSize: 20)),
-                contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                horizontalTitleGap: 0,
-                onTap: () {
-                  Route route =
-                      MaterialPageRoute(builder: (context) => SearchPage());
-                  Navigator.pop(context);
-                  if (currentPage != CurrentPage.SEARCH) {
-                    Navigator.push(context, route);
-                  }
-                },
+            ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.logout_rounded),
+                    title: Text('Log Out', style: TextStyle(fontSize: 20)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    horizontalTitleGap: 0,
+                    onTap: () async {
+                      await context.read<AuthService>().signOut();
+                      Navigator.popUntil(
+                          context, (route) => !Navigator.canPop(context));
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                leading: Icon(Icons.person_rounded),
-                title: Text('Profile', style: TextStyle(fontSize: 20)),
-                contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                horizontalTitleGap: 0,
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.book_rounded),
-                title: Text('My Books', style: TextStyle(fontSize: 20)),
-                contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                horizontalTitleGap: 0,
-                onTap: () {
-                  Navigator.popUntil(
-                      context, (route) => !Navigator.canPop(context));
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.list),
-                title: Text('Reading List', style: TextStyle(fontSize: 20)),
-                contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                horizontalTitleGap: 0,
-                onTap: () {
-                  Route route = MaterialPageRoute(
-                      builder: (context) => ReadingListPage());
-                  Navigator.pop(context);
-                  if (currentPage != CurrentPage.READING_LIST) {
-                    Navigator.push(context, route);
-                  }
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.lock_rounded),
-                title: Text('Log Out', style: TextStyle(fontSize: 20)),
-                contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                horizontalTitleGap: 0,
-                onTap: () async {
-                  await context.read<AuthService>().signOut();
-                  Navigator.popUntil(
-                      context, (route) => !Navigator.canPop(context));
-                },
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
