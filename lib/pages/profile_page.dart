@@ -1,3 +1,4 @@
+import 'package:books_log/components/edit_name_dialog.dart';
 import 'package:books_log/components/my_drawer.dart';
 import 'package:books_log/pages/my_books_page.dart';
 import 'package:books_log/pages/reading_list_page.dart';
@@ -20,9 +21,23 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final User user = context.read<AuthService>().getCurrentUser();
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(user.displayName!),
         elevation: 0,
+        actions: [
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              primary: Colors.white.withOpacity(0.4),
+            ),
+            onPressed: () {
+              showDialog(
+                  context: context, builder: (context) => EditNameDialog());
+            },
+            icon: Icon(Icons.edit),
+            label: Text('Change Name'),
+          ),
+        ],
       ),
       drawer: MyDrawer(currentPage: CurrentPage.PROFILE),
       body: Scrollbar(

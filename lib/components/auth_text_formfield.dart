@@ -6,13 +6,15 @@ class AuthTextFormField extends StatelessWidget {
   final IconData prefixIcon;
   final FormFieldValidator<String> validator;
   final bool obscureText;
+  final bool? autofocus;
   const AuthTextFormField(
       {Key? key,
       required this.controller,
       required this.hintText,
       required this.prefixIcon,
       required this.validator,
-      required this.obscureText})
+      required this.obscureText,
+      this.autofocus})
       : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class AuthTextFormField extends StatelessWidget {
       ),
       obscureText: obscureText,
       validator: validator,
+      autofocus: autofocus ?? false,
     );
   }
 }

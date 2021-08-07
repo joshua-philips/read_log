@@ -41,10 +41,6 @@ class _FetchDetailsPageState extends State<FetchDetailsPage> {
       await fetchLibraryWork(widget.openLibrarySearchDoc.key);
       await fetchLibraryBook(widget.openLibrarySearchDoc.lccn
           .firstWhere((element) => element.length > 4));
-      // TODO: When firstwhere fails try with lastwhere. 'error'
-      // variable will have to split for either work error/ book error
-      // catch either errors and setstate for the particular error
-      // meaning separate BookDetail sent from this page
       setState(() {
         fetchOngoing = false;
         fetchCompleted = true;
