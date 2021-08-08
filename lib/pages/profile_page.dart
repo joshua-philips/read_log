@@ -1,6 +1,7 @@
 import 'package:books_log/components/edit_name_dialog.dart';
 import 'package:books_log/components/my_drawer.dart';
 import 'package:books_log/pages/my_books_page.dart';
+import 'package:books_log/pages/profile_photo_page.dart';
 import 'package:books_log/pages/reading_list_page.dart';
 import 'package:books_log/services/auth_service.dart';
 import 'package:books_log/services/firestore_service.dart';
@@ -56,7 +57,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       onForegroundImageError: (exception, stackTrace) =>
                           Text(user.displayName![0]),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Route route = MaterialPageRoute(
+                          builder: (context) => ProfilePhotoPage(
+                                photoUrl: user.photoURL!,
+                              ));
+                      Navigator.push(context, route);
+                    },
                   ),
                   SizedBox(height: 10),
                   Text(

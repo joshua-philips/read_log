@@ -14,4 +14,8 @@ class StorageService {
 
     return await taskSnapshot.ref.getDownloadURL();
   }
+
+  Future<void> removePhoto(String fileName) async {
+    return _storage.ref().child('$fileName.jpg').delete();
+  }
 }

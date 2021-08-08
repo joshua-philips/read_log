@@ -91,10 +91,9 @@ class BookImageToDialog extends StatelessWidget {
         showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (context) => buildImageDialog(
-            context,
-            book.coverImage,
-            book.title,
+          builder: (context) => NetworkImageDialog(
+            imageUrl: book.coverImage,
+            imageTitle: book.title,
           ),
         );
       },
