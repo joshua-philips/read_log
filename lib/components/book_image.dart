@@ -15,6 +15,16 @@ class MyBooksImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onDoubleTap: () {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => NetworkImageDialog(
+            imageUrl: book.coverImage,
+            imageTitle: book.title,
+          ),
+        );
+      },
       onLongPress: () {
         showModalBottomSheet(
           context: context,

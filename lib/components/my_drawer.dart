@@ -69,8 +69,11 @@ class MyDrawer extends StatelessWidget {
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     horizontalTitleGap: 0,
                     onTap: () {
-                      Navigator.popUntil(
-                          context, (route) => !Navigator.canPop(context));
+                      Navigator.pop(context);
+                      if (currentPage != CurrentPage.MY_BOOKS) {
+                        Navigator.popUntil(
+                            context, (route) => !Navigator.canPop(context));
+                      }
                     },
                   ),
                   ListTile(
