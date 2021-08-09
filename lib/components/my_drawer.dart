@@ -1,3 +1,4 @@
+import 'package:books_log/pages/change_password_page.dart';
 import 'package:books_log/pages/profile_page.dart';
 import 'package:books_log/pages/reading_list_page.dart';
 import 'package:books_log/pages/search_page.dart';
@@ -35,14 +36,24 @@ class MyDrawer extends StatelessWidget {
                         .color!
                         .withOpacity(0.7)),
               ),
-              currentAccountPicture: Material(
-                elevation: 12,
-                borderRadius: BorderRadius.circular(80),
-                child: CircleAvatar(
-                  foregroundImage: NetworkImage(user.photoURL!),
-                  onForegroundImageError: (exception, stackTrace) =>
-                      Text(user.displayName![0]),
+              currentAccountPicture: GestureDetector(
+                child: Material(
+                  elevation: 12,
+                  borderRadius: BorderRadius.circular(80),
+                  child: CircleAvatar(
+                    foregroundImage: NetworkImage(user.photoURL!),
+                    onForegroundImageError: (exception, stackTrace) =>
+                        Text(user.displayName![0]),
+                  ),
                 ),
+                onTap: () {
+                  Route route =
+                      MaterialPageRoute(builder: (context) => ProfilePage());
+                  Navigator.pop(context);
+                  if (currentPage != CurrentPage.PROFILE) {
+                    Navigator.push(context, route);
+                  }
+                },
               ),
             ),
             Padding(
@@ -113,6 +124,18 @@ class MyDrawer extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
+                    leading: Icon(Icons.settings_rounded),
+                    title: Text('Settings', style: TextStyle(fontSize: 18)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    horizontalTitleGap: 0,
+                    onTap: () {
+                      Route route = MaterialPageRoute(
+                          builder: (context) => ChangePasswordPage());
+                      Navigator.pop(context);
+                      Navigator.push(context, route);
+                    },
+                  ),
+                  ListTile(
                     leading: Icon(Icons.logout_rounded),
                     title: Text('Log Out', style: TextStyle(fontSize: 18)),
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
@@ -122,13 +145,6 @@ class MyDrawer extends StatelessWidget {
                       Navigator.popUntil(
                           context, (route) => !Navigator.canPop(context));
                     },
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.settings_rounded),
-                    title: Text('Settings', style: TextStyle(fontSize: 18)),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                    horizontalTitleGap: 0,
-                    onTap: () {},
                   ),
                 ],
               ),

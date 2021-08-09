@@ -32,4 +32,12 @@ class AuthService {
   Future<void> sendPasswordResetMail(String email) {
     return _firebaseAuth.sendPasswordResetEmail(email: email);
   }
+
+  Future<void> changePassword(
+      String email, String oldPassword, String newPassword) async {
+    AuthCredential credential =
+        EmailAuthProvider.credential(email: email, password: oldPassword);
+    await _firebaseAuth.currentUser!.reauthenticateWithCredential(credential);
+    await _firebaseAuth.currentUser!.updatePassword(newPassword);
+  }
 }
