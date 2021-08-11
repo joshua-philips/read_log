@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.books_log">
    <application
-        android:label="books_log"
+        android:label="Read Log"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

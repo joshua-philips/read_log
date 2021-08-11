@@ -24,7 +24,27 @@ class LoginPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 90),
+              SizedBox(height: 15),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/logo.png',
+                      scale: 4.5,
+                      filterQuality: FilterQuality.none,
+                    ),
+                    SizedBox(width: 5),
+                    Flexible(
+                      child: Text(
+                        "Keep track of your books with our exciting app",
+                        style: TextStyle(fontSize: 18, color: myGrey),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 40),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -63,7 +83,7 @@ class LoginPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 15),
               Container(
                 margin: EdgeInsets.all(20),
                 child: Form(
@@ -118,7 +138,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: BlueButton(

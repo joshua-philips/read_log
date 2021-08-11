@@ -56,8 +56,10 @@ class _MyAppState extends State<MyApp> {
 
     // Show a loader until FlutterFire is initialized
     if (!_initialized) {
-      return Container();
-      // TODO: Loader/Splash
+      return MaterialApp(
+        title: 'Read Log',
+        home: LoadingScreen(),
+      );
     }
 
     return MultiProvider(
@@ -73,7 +75,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<GridSettings>(create: (_) => GridSettings()),
       ],
       builder: (context, child) => MaterialApp(
-        title: 'Book Log',
+        title: 'Read Log',
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
           primaryColor: Colors.grey[900],
@@ -111,13 +113,25 @@ class HomeController extends StatelessWidget {
             return LoginPage();
           }
         }
-        return Scaffold(
-          body: Center(
-            child: Text('Loading...'),
-            // TODO: Loader/Splash
-          ),
-        );
+        return LoadingScreen();
       },
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Image.asset(
+          'assets/logo.png',
+          scale: 2,
+          filterQuality: FilterQuality.none,
+        ),
+      ),
     );
   }
 }
