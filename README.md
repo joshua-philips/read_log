@@ -1,2 +1,3 @@
-# books_log
+# Read Log
+Tracking books read, reading list
 

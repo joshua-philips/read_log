@@ -56,10 +56,7 @@ class _MyAppState extends State<MyApp> {
 
     // Show a loader until FlutterFire is initialized
     if (!_initialized) {
-      return MaterialApp(
-        title: 'Read Log',
-        home: LoadingScreen(),
-      );
+      return Container();
     }
 
     return MultiProvider(
@@ -128,7 +125,7 @@ class LoadingScreen extends StatelessWidget {
       body: Center(
         child: Image.asset(
           'assets/logo.png',
-          scale: 2,
+          scale: 3,
           filterQuality: FilterQuality.none,
         ),
       ),

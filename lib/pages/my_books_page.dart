@@ -1,6 +1,7 @@
 import 'package:books_log/components/book_image.dart';
 import 'package:books_log/components/my_books_card.dart';
 import 'package:books_log/components/my_drawer.dart';
+import 'package:books_log/configuration/constants.dart';
 import 'package:books_log/configuration/grid_settings.dart';
 import 'package:books_log/models/book.dart';
 import 'package:books_log/models/my_books.dart';
@@ -80,11 +81,7 @@ class _MyBooksPageState extends State<MyBooksPage> {
                         if (snapshot.hasData) {
                           return snapshot.data!.docs.length > 0
                               ? body(snapshot, context)
-                              : Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 1.5,
-                                  child: Center(child: Text('No books added')),
-                                );
+                              : NoBooks();
                         } else {
                           return Container();
                         }
@@ -141,5 +138,31 @@ class _MyBooksPageState extends State<MyBooksPage> {
         }).toList(),
       );
     }
+  }
+}
+
+class NoBooks extends StatelessWidget {
+  const NoBooks({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height / 1.5,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/logo.png',
+            scale: 3,
+            filterQuality: FilterQuality.none,
+          ),
+          SizedBox(height: 15),
+          Text(
+            'No books added',
+            style: TextStyle(color: myGrey, fontSize: 18),
+          ),
+        ],
+      ),
+    );
   }
 }

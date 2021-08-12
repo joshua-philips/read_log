@@ -24,32 +24,31 @@ class LoginPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 15),
+              SizedBox(height: 70),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.asset(
-                      'assets/logo.png',
-                      scale: 4.5,
+                      'assets/logo_noname.png',
+                      scale: 5,
                       filterQuality: FilterQuality.none,
                     ),
-                    SizedBox(width: 5),
-                    Flexible(
-                      child: Text(
-                        "Keep track of your books with our exciting app",
-                        style: TextStyle(fontSize: 18, color: myGrey),
-                      ),
+                    SizedBox(height: 5),
+                    Text(
+                      "Keep track of your books with our exciting app",
+                      style: TextStyle(fontSize: 18, color: myGrey),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 15),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: Text(
-                  "Hey,\nLogin Now.",
+                  "Login Now.",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w500,
@@ -138,7 +137,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: BlueButton(

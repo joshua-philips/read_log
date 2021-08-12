@@ -86,6 +86,10 @@ class PasswordResetPage extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: MaterialButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
                   color: Colors.red,
                   minWidth: double.maxFinite,
                   height: 45,
